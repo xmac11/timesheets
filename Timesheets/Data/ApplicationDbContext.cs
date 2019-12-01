@@ -26,6 +26,16 @@ namespace Timesheets.Data
             builder.Entity<ProjectDepartment>()
                 .HasKey(pd => new { pd.ProjectId, pd.DepartmentId });
 
+            builder.Entity<ProjectDepartment>()
+                .HasOne(pd => pd.Project)
+                .WithMany(p => p.RelatedDeparments)
+                .HasForeignKey(pd => pd.ProjectId);
+
+            builder.Entity<ProjectDepartment>()
+                .HasOne(pd => pd.Department)
+                .WithMany(d => d.RelatedProjects)
+                .HasForeignKey(pd => pd.DepartmentId);
+
             // one-to-many (Owned Projects - Deparment)
             builder.Entity<Department>()
                 .HasMany(d => d.OwnedProjects)

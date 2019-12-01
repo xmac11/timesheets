@@ -10,7 +10,7 @@ using Timesheets.Data;
 namespace Timesheets.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20191201205714_ProjectDepartment")]
+    [Migration("20191201210039_ProjectDepartment")]
     partial class ProjectDepartment
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
