@@ -22,8 +22,16 @@ namespace Timesheets.Data
         {
             base.OnModelCreating(builder);
 
+            // many-to-many (Deparment - Related Projects)
             builder.Entity<ProjectDepartment>()
                 .HasKey(pd => new { pd.ProjectId, pd.DepartmentId });
+
+            // one-to-many (Owned Projects - Deparment)
+            builder.Entity<Department>()
+                .HasMany(d => d.OwnedProjects)
+                .WithOne(p => p.OwnerDeparment)
+                .HasForeignKey(p => p.OwnerDeparmentId)
+                .OnDelete(DeleteBehavior.Restrict); // https://stackoverflow.com/questions/41711772/entity-framework-core-cascade-delete-one-to-many-relationship
         }
     }
 }

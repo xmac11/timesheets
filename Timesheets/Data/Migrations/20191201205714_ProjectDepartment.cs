@@ -25,11 +25,18 @@ namespace Timesheets.Data.Migrations
                 {
                     ProjectId = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProjectName = table.Column<string>(nullable: true)
+                    ProjectName = table.Column<string>(nullable: true),
+                    OwnerDeparmentId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Projects", x => x.ProjectId);
+                    table.ForeignKey(
+                        name: "FK_Projects_Deparments_OwnerDeparmentId",
+                        column: x => x.OwnerDeparmentId,
+                        principalTable: "Deparments",
+                        principalColumn: "DepartmentId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -57,6 +64,11 @@ namespace Timesheets.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Projects_OwnerDeparmentId",
+                table: "Projects",
+                column: "OwnerDeparmentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProjectsDepartments_DepartmentId",
                 table: "ProjectsDepartments",
                 column: "DepartmentId");
@@ -68,10 +80,10 @@ namespace Timesheets.Data.Migrations
                 name: "ProjectsDepartments");
 
             migrationBuilder.DropTable(
-                name: "Deparments");
+                name: "Projects");
 
             migrationBuilder.DropTable(
-                name: "Projects");
+                name: "Deparments");
         }
     }
 }

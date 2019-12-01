@@ -10,7 +10,7 @@ using Timesheets.Data;
 namespace Timesheets.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20191201205316_ProjectDepartment")]
+    [Migration("20191201205714_ProjectDepartment")]
     partial class ProjectDepartment
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -243,10 +243,15 @@ namespace Timesheets.Data.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<long>("OwnerDeparmentId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("ProjectName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ProjectId");
+
+                    b.HasIndex("OwnerDeparmentId");
 
                     b.ToTable("Projects");
                 });
@@ -314,6 +319,15 @@ namespace Timesheets.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Timesheets.Models.Project", b =>
+                {
+                    b.HasOne("Timesheets.Models.Department", "OwnerDeparment")
+                        .WithMany("OwnedProjects")
+                        .HasForeignKey("OwnerDeparmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
