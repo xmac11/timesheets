@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Timesheets.Data.Migrations
 {
@@ -20,6 +21,18 @@ namespace Timesheets.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TimesheetUsers",
+                columns: table => new
+                {
+                    UserId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TimesheetUsers", x => x.UserId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Projects",
                 columns: table => new
                 {
@@ -37,6 +50,27 @@ namespace Timesheets.Data.Migrations
                         principalTable: "Deparments",
                         principalColumn: "DepartmentId",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Timesheets",
+                columns: table => new
+                {
+                    TimesheetId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<long>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    HoursWorked = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Timesheets", x => x.TimesheetId);
+                    table.ForeignKey(
+                        name: "FK_Timesheets_TimesheetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "TimesheetUsers",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -72,6 +106,12 @@ namespace Timesheets.Data.Migrations
                 name: "IX_ProjectsDepartments_DepartmentId",
                 table: "ProjectsDepartments",
                 column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Timesheets_UserId",
+                table: "Timesheets",
+                column: "UserId",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -80,7 +120,13 @@ namespace Timesheets.Data.Migrations
                 name: "ProjectsDepartments");
 
             migrationBuilder.DropTable(
+                name: "Timesheets");
+
+            migrationBuilder.DropTable(
                 name: "Projects");
+
+            migrationBuilder.DropTable(
+                name: "TimesheetUsers");
 
             migrationBuilder.DropTable(
                 name: "Deparments");

@@ -12,6 +12,8 @@ namespace Timesheets.Data
         public DbSet<Department> Deparments { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<ProjectDepartment> ProjectsDepartments { get; set; }
+        public DbSet<User> TimesheetUsers { get; set; }
+        public DbSet<Timesheet> Timesheets { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
