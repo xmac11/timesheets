@@ -1,0 +1,11 @@
+﻿
+@{
+    ViewData["Title"] = "Kati";
+}
+
+@model Kati
+<div class="text-center">
+    <h1 class="display-4">Kati </h1>
+    <p>@ViewData["Kati_number"] , @ViewData["Kati_text"], @Model.number </p>
+</div>
+@Html.LabelFor(x => Model.number) @Model.number

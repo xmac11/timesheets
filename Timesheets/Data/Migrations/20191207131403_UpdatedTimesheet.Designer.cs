@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Timesheets.Data;
 
 namespace Timesheets.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191207131403_UpdatedTimesheet")]
+    partial class UpdatedTimesheet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -282,7 +284,16 @@ namespace Timesheets.Data.Migrations
                     b.Property<int>("HoursWorked")
                         .HasColumnType("int");
 
+                    b.Property<long>("ProjectId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("TimesheetId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Timesheets");
                 });
@@ -370,6 +381,15 @@ namespace Timesheets.Data.Migrations
                     b.HasOne("Timesheets.Models.Project", "Project")
                         .WithMany("RelatedDeparments")
                         .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Timesheets.Models.Timesheet", b =>
+                {
+                    b.HasOne("Timesheets.Models.User", null)
+                        .WithOne("Timesheet")
+                        .HasForeignKey("Timesheets.Models.Timesheet", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

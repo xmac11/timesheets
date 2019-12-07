@@ -44,6 +44,7 @@ namespace Timesheets.Data
                 .WithOne(p => p.OwnerDeparment)
                 .HasForeignKey(p => p.OwnerDeparmentId)
                 .OnDelete(DeleteBehavior.Restrict); // https://stackoverflow.com/questions/41711772/entity-framework-core-cascade-delete-one-to-many-relationship
+
         }
     }
 }

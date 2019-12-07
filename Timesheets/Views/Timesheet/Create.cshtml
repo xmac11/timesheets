@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model TimeSheetViewModel
+<h1>Create</h1>
+<form asp-controller="Timesheet" asp-action="Create" method="post">
+    <!--
+        <div class="form-group">
+        <label asp-for="UserId"></label>
+        <input asp-for="UserId" class="form-control" />
+        <span asp-validation-for="UserId"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ProjectId"></label>
+        <input asp-for="ProjectId" class="form-control" />
+        <span asp-validation-for="ProjectId"></span>
+        
+    </div>
+        -->
+    <div class="form-group">
+        <label asp-for="HoursWorked"></label>
+        <input asp-for="HoursWorked" class="form-control" />
+        <span asp-validation-for="HoursWorked"></span>
+    </div>
+
+    <!--                                    
+    Html.DropDownListFor(x=> x.HoursWorked,(SelectListItem[]) ViewBag["lalaDataSource"], "Text", new { })
+
+    <select asp-for="HoursWorked" asp-items="ViewBag["lalaDataSource"]"></select> -->
+    <input type="submit" value="Create"/>
+</form>

@@ -8,6 +8,6 @@ namespace Timesheets.Models
     public class User
     {
         public long UserId { get; set; }
-        public Timesheet Timesheet { get; set; }
+        //public Timesheet Timesheet { get; set; }
     }
 }
