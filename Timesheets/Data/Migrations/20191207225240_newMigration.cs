@@ -21,6 +21,25 @@ namespace Timesheets.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Employees",
+                columns: table => new
+                {
+                    UserId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DepartmentId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.UserId);
+                    table.ForeignKey(
+                        name: "FK_Employees_Deparments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Deparments",
+                        principalColumn: "DepartmentId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Projects",
                 columns: table => new
                 {
@@ -70,8 +89,9 @@ namespace Timesheets.Data.Migrations
                 {
                     TimesheetId = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<long>(nullable: false),
                     ProjectId = table.Column<long>(nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false),
+                    DateStarted = table.Column<DateTime>(nullable: false),
                     HoursWorked = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -83,31 +103,11 @@ namespace Timesheets.Data.Migrations
                         principalTable: "Projects",
                         principalColumn: "ProjectId",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Employees",
-                columns: table => new
-                {
-                    UserId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DepartmentId = table.Column<long>(nullable: false),
-                    TimesheetId = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Employees", x => x.UserId);
                     table.ForeignKey(
-                        name: "FK_Employees_Deparments_DepartmentId",
-                        column: x => x.DepartmentId,
-                        principalTable: "Deparments",
-                        principalColumn: "DepartmentId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Employees_Timesheets_TimesheetId",
-                        column: x => x.TimesheetId,
-                        principalTable: "Timesheets",
-                        principalColumn: "TimesheetId",
+                        name: "FK_Timesheets_Employees_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Employees",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -115,11 +115,6 @@ namespace Timesheets.Data.Migrations
                 name: "IX_Employees_DepartmentId",
                 table: "Employees",
                 column: "DepartmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Employees_TimesheetId",
-                table: "Employees",
-                column: "TimesheetId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_OwnerDeparmentId",
@@ -135,13 +130,15 @@ namespace Timesheets.Data.Migrations
                 name: "IX_Timesheets_ProjectId",
                 table: "Timesheets",
                 column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Timesheets_UserId",
+                table: "Timesheets",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Employees");
-
             migrationBuilder.DropTable(
                 name: "ProjectsDepartments");
 
@@ -150,6 +147,9 @@ namespace Timesheets.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Projects");
+
+            migrationBuilder.DropTable(
+                name: "Employees");
 
             migrationBuilder.DropTable(
                 name: "Deparments");

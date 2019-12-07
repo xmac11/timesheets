@@ -1,0 +1,34 @@
+﻿@model TimesheetViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create timesheet entry</h1>
+
+<form asp-controller="Timesheets" asp-action="Create" method="post">
+
+  <div class="form-group">
+     <label asp-for="EmployeeId"></label><input asp-for="EmployeeId" class="form-control" />
+     <span asp-validation-for="EmployeeId"></span>
+  </div>
+
+    <div class="form-group">
+     <label asp-for="ProjectId"></label><input asp-for="ProjectId" class="form-control" />
+     <span asp-validation-for="ProjectId"></span>
+  </div>
+
+    <div class="form-group">
+     <label asp-for="DateStarted"></label><input asp-for="DateStarted" class="form-control" />
+     <span asp-validation-for="DateStarted"></span>
+  </div>
+
+    <div class="form-group">
+     <label asp-for="HoursWorked"></label><input asp-for="HoursWorked" class="form-control" />
+     <span asp-validation-for="HoursWorked"></span>
+  </div>
+
+  
+  <input type="submit" value="Submit" />
+</form>
+

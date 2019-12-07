@@ -53,11 +53,11 @@ namespace Timesheets.Data
                 .HasForeignKey(u => u.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // one-to-many (Timesheet-User)
-            builder.Entity<Timesheet>()
-                .HasMany(t => t.Users)
-                .WithOne(u => u.Timesheet)
-                .HasForeignKey(u => u.TimesheetId)
+            // one-to-many (User-Timesheet)
+            builder.Entity<User>()
+                .HasMany(u => u.Timesheets)
+                .WithOne(t => t.User)
+                .HasForeignKey(t => t.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // one-to-many (Project - Timesheet)

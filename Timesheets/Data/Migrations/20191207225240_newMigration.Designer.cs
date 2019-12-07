@@ -10,7 +10,7 @@ using Timesheets.Data;
 namespace Timesheets.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20191207220431_newMigration")]
+    [Migration("20191207225240_newMigration")]
     partial class newMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -278,7 +278,7 @@ namespace Timesheets.Data.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("DateCreated")
+                    b.Property<DateTime>("DateStarted")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("HoursWorked")
@@ -287,9 +287,14 @@ namespace Timesheets.Data.Migrations
                     b.Property<long>("ProjectId")
                         .HasColumnType("bigint");
 
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("TimesheetId");
 
                     b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Timesheets");
                 });
@@ -304,14 +309,9 @@ namespace Timesheets.Data.Migrations
                     b.Property<long>("DepartmentId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("TimesheetId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("UserId");
 
                     b.HasIndex("DepartmentId");
-
-                    b.HasIndex("TimesheetId");
 
                     b.ToTable("Employees");
                 });
@@ -398,6 +398,12 @@ namespace Timesheets.Data.Migrations
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("Timesheets.Models.User", "User")
+                        .WithMany("Timesheets")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Timesheets.Models.User", b =>
@@ -405,12 +411,6 @@ namespace Timesheets.Data.Migrations
                     b.HasOne("Timesheets.Models.Department", "Department")
                         .WithMany("Users")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Timesheets.Models.Timesheet", "Timesheet")
-                        .WithMany("Users")
-                        .HasForeignKey("TimesheetId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

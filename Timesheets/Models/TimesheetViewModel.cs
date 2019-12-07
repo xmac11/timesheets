@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Timesheets.Models
 {
-    public class Timesheet
+    public class TimesheetViewModel
     {
-        public long TimesheetId { get; set; }
+        [DisplayName("Enter employee Id")]
+        public long EmployeeId { get; set; }
 
-        // one-to-many (timesheet - user}
-        public long UserId { get; set; }
-        public User User { get; set; }
-
-        // many to one
+        [DisplayName("Enter project Id")]
         public long ProjectId { get; set; }
-        public Project Project { get; set; }
 
+        [DisplayName("Enter date started")]
         public DateTime DateStarted { get; set; }
+
+        [DisplayName("Enter hours worked")]
         public int HoursWorked { get; set; }
     }
 }

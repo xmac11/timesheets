@@ -14,7 +14,6 @@ namespace Timesheets.Models
         public Department Department { get; set; }
 
         // many-to-one (Timesheet)
-        public long TimesheetId { get; set; }
-        public Timesheet Timesheet { get; set; }
+        public IList<Timesheet> Timesheets { get; set; }
     }
 }
