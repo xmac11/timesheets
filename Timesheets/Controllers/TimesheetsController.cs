@@ -39,7 +39,7 @@ namespace Timesheets.Controllers
             _context.Timesheets.Add(timesheet);
             _context.SaveChanges();
 
-            return View();
+            return Redirect("~/");
         }
     }
 }
