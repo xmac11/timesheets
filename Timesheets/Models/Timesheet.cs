@@ -9,9 +9,12 @@ namespace Timesheets.Models
     {
         public long TimesheetId { get; set; }
 
-        // one-to-one (timesheet - user}
-        public long UserId { get; set; }
-        public User User { get; set; }
+        // one-to-many (timesheet - user}
+        public IList<User> Users { get; set; }
+
+        // many to one
+        public long ProjectId { get; set; }
+        public Project Project { get; set; }
 
         public DateTime DateCreated { get; set; }
         public int HoursWorked { get; set; }

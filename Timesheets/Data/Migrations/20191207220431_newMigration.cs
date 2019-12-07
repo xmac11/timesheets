@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Timesheets.Data.Migrations
 {
-    public partial class ProjectDepartment : Migration
+    public partial class newMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -18,18 +18,6 @@ namespace Timesheets.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Deparments", x => x.DepartmentId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TimesheetUsers",
-                columns: table => new
-                {
-                    UserId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TimesheetUsers", x => x.UserId);
                 });
 
             migrationBuilder.CreateTable(
@@ -50,27 +38,6 @@ namespace Timesheets.Data.Migrations
                         principalTable: "Deparments",
                         principalColumn: "DepartmentId",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Timesheets",
-                columns: table => new
-                {
-                    TimesheetId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<long>(nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    HoursWorked = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Timesheets", x => x.TimesheetId);
-                    table.ForeignKey(
-                        name: "FK_Timesheets_TimesheetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "TimesheetUsers",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -97,6 +64,63 @@ namespace Timesheets.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Timesheets",
+                columns: table => new
+                {
+                    TimesheetId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProjectId = table.Column<long>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    HoursWorked = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Timesheets", x => x.TimesheetId);
+                    table.ForeignKey(
+                        name: "FK_Timesheets_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "ProjectId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Employees",
+                columns: table => new
+                {
+                    UserId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DepartmentId = table.Column<long>(nullable: false),
+                    TimesheetId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.UserId);
+                    table.ForeignKey(
+                        name: "FK_Employees_Deparments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Deparments",
+                        principalColumn: "DepartmentId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Employees_Timesheets_TimesheetId",
+                        column: x => x.TimesheetId,
+                        principalTable: "Timesheets",
+                        principalColumn: "TimesheetId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employees_DepartmentId",
+                table: "Employees",
+                column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employees_TimesheetId",
+                table: "Employees",
+                column: "TimesheetId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_OwnerDeparmentId",
                 table: "Projects",
@@ -108,14 +132,16 @@ namespace Timesheets.Data.Migrations
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Timesheets_UserId",
+                name: "IX_Timesheets_ProjectId",
                 table: "Timesheets",
-                column: "UserId",
-                unique: true);
+                column: "ProjectId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Employees");
+
             migrationBuilder.DropTable(
                 name: "ProjectsDepartments");
 
@@ -124,9 +150,6 @@ namespace Timesheets.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Projects");
-
-            migrationBuilder.DropTable(
-                name: "TimesheetUsers");
 
             migrationBuilder.DropTable(
                 name: "Deparments");

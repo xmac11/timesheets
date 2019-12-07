@@ -282,13 +282,12 @@ namespace Timesheets.Data.Migrations
                     b.Property<int>("HoursWorked")
                         .HasColumnType("int");
 
-                    b.Property<long>("UserId")
+                    b.Property<long>("ProjectId")
                         .HasColumnType("bigint");
 
                     b.HasKey("TimesheetId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("ProjectId");
 
                     b.ToTable("Timesheets");
                 });
@@ -300,9 +299,19 @@ namespace Timesheets.Data.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<long>("DepartmentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TimesheetId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("UserId");
 
-                    b.ToTable("TimesheetUsers");
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("TimesheetId");
+
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -382,10 +391,25 @@ namespace Timesheets.Data.Migrations
 
             modelBuilder.Entity("Timesheets.Models.Timesheet", b =>
                 {
-                    b.HasOne("Timesheets.Models.User", "User")
-                        .WithOne("Timesheet")
-                        .HasForeignKey("Timesheets.Models.Timesheet", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("Timesheets.Models.Project", "Project")
+                        .WithMany("Timesheets")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Timesheets.Models.User", b =>
+                {
+                    b.HasOne("Timesheets.Models.Department", "Department")
+                        .WithMany("Users")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Timesheets.Models.Timesheet", "Timesheet")
+                        .WithMany("Users")
+                        .HasForeignKey("TimesheetId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

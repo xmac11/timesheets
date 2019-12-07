@@ -14,5 +14,8 @@ namespace Timesheets.Models
 
         // one deparment onws many projects
         public IList<Project> OwnedProjects { get; set; }
+
+        // one department - many users
+        public IList<User> Users { get; set; }
     }
 }

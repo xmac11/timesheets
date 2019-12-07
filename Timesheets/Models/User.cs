@@ -8,6 +8,13 @@ namespace Timesheets.Models
     public class User
     {
         public long UserId { get; set; }
+
+        // many-to-one (Department)
+        public long DepartmentId { get; set; }
+        public Department Department { get; set; }
+
+        // many-to-one (Timesheet)
+        public long TimesheetId { get; set; }
         public Timesheet Timesheet { get; set; }
     }
 }
