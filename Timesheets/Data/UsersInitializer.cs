@@ -25,6 +25,7 @@ namespace Timesheets.Data
                 if (result.Succeeded)
                 {
                     userManager.AddToRoleAsync(user, "Admin").Wait();
+
                 }
             }
         }
