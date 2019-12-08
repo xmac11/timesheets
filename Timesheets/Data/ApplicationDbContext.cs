@@ -28,12 +28,17 @@ namespace Timesheets.Data
             modelBuilder.Entity<DepartmentProject>()
                  .HasOne(dp => dp.Department)
                  .WithMany(d => d.Projects)
-                 .HasForeignKey(dp => dp.ProjectId);
- 				   .OnDelete(DeleteBehavior.Cascade);   // Setup CASCADE ON DELETE
-            modelBuilder.Entity<ProductCategory>()
-                 .HasOne(pt => pt.Category)
-                 .WithMany(t => t.Products)
-                 .HasForeignKey(pt => pt.CategoryId);
+                 .HasForeignKey(dp => dp.DepartmentId);
+ 				   //.OnDelete(DeleteBehavior.Cascade);   // Setup CASCADE ON DELETE
+            modelBuilder.Entity<DepartmentProject>()
+                 .HasOne(pt => pt.Project)
+                 .WithMany(t => t.Departments)
+                 .HasForeignKey(pt => pt.ProjectId);
+
+            modelBuilder.Entity<Department>()
+                .HasOne(d => d.DepartmentHead)
+                .WithOne(u => u.Department)
+                .HasForeignKey<Department>(ad => ad.DepartmentHeadId);
         }
     
     }
