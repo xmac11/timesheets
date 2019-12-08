@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Timesheets.Models;
@@ -39,6 +40,12 @@ namespace Timesheets.Data
                 .HasOne(d => d.DepartmentHead)
                 .WithOne(u => u.Department)
                 .HasForeignKey<Department>(ad => ad.DepartmentHeadId);
+
+            modelBuilder.Entity<IdentityRole>().HasData(
+                    new IdentityRole() { Name="Admin" },
+                    new IdentityRole() { Name="Employee" },
+                    new IdentityRole() { Name="Manager"}
+                );
         }
     }
 }
