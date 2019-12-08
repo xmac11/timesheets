@@ -31,15 +31,30 @@ namespace Timesheets
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<MyUser>(options => options.SignIn.RequireConfirmedAccount = true)//use the custom User we created
+
+
+            services.AddDefaultIdentity<MyUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
+                //Add more options eg
+                //options.SignIn.RequireConfirmedEmail = true;
+
+            })//use the custom User we created
                 .AddRoles<IdentityRole>() //make so we can use roles
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            /*More options
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "";
+            });*/
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<MyUser> userManager)
         {
             if (env.IsDevelopment())
             {
@@ -67,6 +82,8 @@ namespace Timesheets
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
+            UsersInitializer.SeedUsers(userManager);
         }
     }
 }

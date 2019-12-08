@@ -8,7 +8,9 @@ namespace Timesheets.Models
 {
     public class MyUser : IdentityUser
     {
+        [PersonalData]
         public string FirstName { get; set; }
+        [PersonalData]
         public string LastName { get; set; }
         public Department Department { get; set; }
         public double CostPerHour { get; set; }
