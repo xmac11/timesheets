@@ -20,6 +20,7 @@ namespace Timesheets
     {
         public Startup(IConfiguration configuration)
         {
+            // A change by gsova!
             Configuration = configuration;
         }
 
