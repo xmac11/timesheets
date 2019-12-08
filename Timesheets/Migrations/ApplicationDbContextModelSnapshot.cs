@@ -48,21 +48,24 @@ namespace Timesheets.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "097653ae-56ef-4a64-875a-ef07529d13fa",
-                            ConcurrencyStamp = "389572b1-5645-4bca-940d-03effd18f373",
-                            Name = "Admin"
+                            Id = "a6b30f17-e1a5-4401-aa86-75b648390684",
+                            ConcurrencyStamp = "22e1e1ef-4587-4477-a7e8-dffe11b860fb",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "290e6d1c-b965-493f-94d2-524cde9f8e71",
-                            ConcurrencyStamp = "bb3b0c56-72d2-4bec-b536-d9f9ba3c9a80",
-                            Name = "Employee"
+                            Id = "136d38fb-0fcd-4426-9939-183819c0aa5b",
+                            ConcurrencyStamp = "36fe4016-cee6-4da2-a0d1-ccbcdc879087",
+                            Name = "Employee",
+                            NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "19933cc5-2035-4025-8f1d-2a51d8e12ea0",
-                            ConcurrencyStamp = "d2a0ac75-f9a8-4ac8-9e30-6bc30f6746df",
-                            Name = "Manager"
+                            Id = "6e7ae09f-60ae-4552-8705-3b63a1fa5bda",
+                            ConcurrencyStamp = "2496a158-139b-45e5-8018-bfa674b55ceb",
+                            Name = "Manager",
+                            NormalizedName = "MANAGER"
                         });
                 });
 

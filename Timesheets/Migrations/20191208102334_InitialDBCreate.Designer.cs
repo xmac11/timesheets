@@ -10,8 +10,8 @@ using Timesheets.Data;
 namespace Timesheets.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20191208090758_RelatedUserDepartments")]
-    partial class RelatedUserDepartments
+    [Migration("20191208102334_InitialDBCreate")]
+    partial class InitialDBCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -46,6 +46,29 @@ namespace Timesheets.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "a6b30f17-e1a5-4401-aa86-75b648390684",
+                            ConcurrencyStamp = "22e1e1ef-4587-4477-a7e8-dffe11b860fb",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "136d38fb-0fcd-4426-9939-183819c0aa5b",
+                            ConcurrencyStamp = "36fe4016-cee6-4da2-a0d1-ccbcdc879087",
+                            Name = "Employee",
+                            NormalizedName = "EMPLOYEE"
+                        },
+                        new
+                        {
+                            Id = "6e7ae09f-60ae-4552-8705-3b63a1fa5bda",
+                            ConcurrencyStamp = "2496a158-139b-45e5-8018-bfa674b55ceb",
+                            Name = "Manager",
+                            NormalizedName = "MANAGER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

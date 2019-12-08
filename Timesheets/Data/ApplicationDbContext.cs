@@ -42,10 +42,12 @@ namespace Timesheets.Data
                 .HasForeignKey<Department>(ad => ad.DepartmentHeadId);
 
             modelBuilder.Entity<IdentityRole>().HasData(
-                    new IdentityRole() { Name="Admin" },
-                    new IdentityRole() { Name="Employee" },
-                    new IdentityRole() { Name="Manager"}
+                    new IdentityRole() { Name="Admin",NormalizedName="ADMIN" },
+                    new IdentityRole() { Name="Employee", NormalizedName="EMPLOYEE" },
+                    new IdentityRole() { Name="Manager", NormalizedName="MANAGER"}
                 );
+
+           
         }
     }
 }
