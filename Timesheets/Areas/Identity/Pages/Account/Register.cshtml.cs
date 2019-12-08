@@ -111,11 +111,13 @@ namespace Timesheets.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                
+                Department selDept = _context.Departments.First(x => x.Id == Input.SelectedDepartment);
+
                 var user = new MyUser { UserName = Input.Email, 
                     Email = Input.Email, 
                     FirstName=Input.FirstName, 
                     LastName=Input.LastName, 
+                    // Department = selDept
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -125,12 +127,13 @@ namespace Timesheets.Areas.Identity.Pages.Account
 
                     await _userManager.AddToRolesAsync(user, Input.SelectedRoles);
 
-                    Department selDept = _context.Departments.First(x => x.Id == Input.SelectedDepartment);
+                    // TODO: This must be implemented correctly - THIS CODE SHOULD NOT EXIST
                     if (selDept.RelatedUsers == null)
                         selDept.RelatedUsers = new List<MyUser>();
 
                     selDept.RelatedUsers.Add(user);
                     _context.SaveChanges();
+                    // END TODO
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
