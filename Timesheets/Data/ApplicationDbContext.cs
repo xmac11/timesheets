@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Timesheets.Models;
+using Timesheets.Models.ModelCreators;
 
 namespace Timesheets.Data
 {
@@ -49,13 +50,9 @@ namespace Timesheets.Data
                     new IdentityRole() { Name="Manager", NormalizedName="MANAGER"}
                 );
 
-            /*modelBuilder.Entity<Department>().HasData(
-                    new Department { 
-                        Name = "IT"
-                    }
-                );*/
+            modelBuilder.Seed();
 
-           
+
         }
     }
 }

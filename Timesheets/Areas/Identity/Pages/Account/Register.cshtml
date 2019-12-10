@@ -40,12 +40,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Input.SelectedRoles"></label>
-                <!-- @Html.DropDownListFor(m => m.Roles, Model.Roles.Select(s => new SelectListItem
-                {
-                    Value = s.Value,
-                    Text = s.Text
-                }), "Please select roles...") 
-                    -->
+                <!--
                     <div>
                         @for (int i = 0; i < Model.Roles.Count; i++)
                         {
@@ -54,14 +49,18 @@
                         }
                     </div>
                 <span asp-validation-for="Input.SelectedRoles" class="text-danger"></span>
+                -->
             </div>
             <div class="form-group">
                 <label asp-for="Input.SelectedDepartment"></label>
-                @Html.DropDownListFor(m => m.Departments, Model.Departments.Select(d => new SelectListItem
-               {
-                   Value = d.Value,
-                   Text = d.Text
-               }), "Please select a department...")
+                <select asp-for="Input.SelectedDepartment" asp-items="Model.Departments.Select(
+                    d => new SelectListItem
+                       {
+                           Value = d.Value,
+                           Text = d.Text,
+                       })">
+                    <option value="">Please select department...</option>
+                </select>
                 <span asp-validation-for="Input.SelectedDepartment" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-primary">Register</button>
