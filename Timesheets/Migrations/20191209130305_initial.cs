@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Timesheets.Migrations
 {
-    public partial class InitialDBCreate : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -234,17 +234,17 @@ namespace Timesheets.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "a6b30f17-e1a5-4401-aa86-75b648390684", "22e1e1ef-4587-4477-a7e8-dffe11b860fb", "Admin", "ADMIN" });
+                values: new object[] { "e3632061-9fea-464c-a2a5-ca87b5614eca", "a98a6938-c3bc-4564-afa0-4c691d4df01d", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "136d38fb-0fcd-4426-9939-183819c0aa5b", "36fe4016-cee6-4da2-a0d1-ccbcdc879087", "Employee", "EMPLOYEE" });
+                values: new object[] { "3376940d-f67e-47ad-a385-a71d153b4ece", "b6902e5b-f52d-49fb-aede-a67ee60e00f0", "Employee", "EMPLOYEE" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "6e7ae09f-60ae-4552-8705-3b63a1fa5bda", "2496a158-139b-45e5-8018-bfa674b55ceb", "Manager", "MANAGER" });
+                values: new object[] { "bfe2fd19-d79f-4fe7-b8ef-bab4e67791d5", "11d49e39-e3c2-48fa-a391-2fac7d0efb74", "Manager", "MANAGER" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

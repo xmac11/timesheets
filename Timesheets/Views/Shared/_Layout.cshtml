@@ -29,7 +29,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         @{
-                            if (SignInManager.Context.User.IsInRole("Admin"))
+                            if (SignInManager.Context.User.IsInRole("Admin")) // User.IsInRole("Admin")
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Departments" asp-action="Index">Manage Departments</a>
