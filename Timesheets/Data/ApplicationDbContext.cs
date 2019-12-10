@@ -49,6 +49,12 @@ namespace Timesheets.Data
                     new IdentityRole() { Name="Manager", NormalizedName="MANAGER"}
                 );
 
+            /*modelBuilder.Entity<Department>().HasData(
+                    new Department { 
+                        Name = "IT"
+                    }
+                );*/
+
            
         }
     }
