@@ -46,7 +46,22 @@ namespace Timesheets.Models.ModelCreators
                         Name = "App Develpment",
                         OwnerDeptId = 1
                     }
-                ); 
+                );
+
+            // seed ProjectDepartment
+            modelBuilder.Entity<DepartmentProject>().HasData(
+                    new DepartmentProject
+                    {
+                        ProjectId = 1,
+                        DepartmentId = 2
+                    },
+
+                    new DepartmentProject
+                    {
+                        ProjectId = 1,
+                        DepartmentId = 3
+                    }
+                );
         }
     }
 }
