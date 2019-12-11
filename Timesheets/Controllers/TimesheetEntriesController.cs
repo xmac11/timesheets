@@ -113,19 +113,42 @@ namespace Timesheets.Controllers
         }
 
         // GET: TimesheetEntries/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var timesheetEntry = await _context.TimesheetEntries.FindAsync(id);
+            var timesheetEntry = _context.TimesheetEntries.Include(t => t.RelatedUser).Include(t => t.RelatedProject).First(x => x.Id == id);
             if (timesheetEntry == null)
             {
                 return NotFound();
             }
-            return View(timesheetEntry);
+
+            TimesheetEntryViewModel viewModel = new TimesheetEntryViewModel
+            {
+                Id = timesheetEntry.Id,
+                RelatedUserName = timesheetEntry.RelatedUser.UserName,
+                ProjectName = timesheetEntry.RelatedProject.Name,
+                DateCreated = timesheetEntry.DateCreated,
+                HoursWorked = timesheetEntry.HoursWorked
+            };
+
+            List<MyUser> users = _context.Users.ToList();
+            List<Project> projects = _context.Projects.ToList();
+
+            foreach (MyUser user in users)
+            {
+                viewModel.Users.Add(user.UserName);
+            }
+
+            foreach (Project project in projects)
+            {
+                viewModel.Projects.Add(project.Name);
+            }
+
+            return View(viewModel);
         }
 
         // POST: TimesheetEntries/Edit/5
@@ -133,15 +156,42 @@ namespace Timesheets.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DateCreated,HoursWorked")] TimesheetEntry timesheetEntry)
+        public async Task<IActionResult> Edit(int id, TimesheetEntryViewModel viewModel)
         {
-            if (id != timesheetEntry.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                List<MyUser> users = _context.Users.ToList();
+                List<Project> projects = _context.Projects.ToList();
+
+                // attach a User to the Timesheet 
+                MyUser relatedUser = null;
+                foreach (MyUser user in users)
+                {
+                    if (user.UserName.Equals(viewModel.RelatedUserName))
+                    {
+                        relatedUser = user;
+                        break;
+                    }
+                }
+
+                // attach a Project to the Timesheet 
+                Project relatedProject = null;
+                foreach (Project project in projects)
+                {
+                    if (project.Name.Equals(viewModel.ProjectName))
+                    {
+                        relatedProject = project;
+                        break;
+                    }
+                }
+
+                TimesheetEntry timesheetEntry = new TimesheetEntry(id, relatedUser, relatedProject, viewModel.DateCreated ?? DateTime.Now, viewModel.HoursWorked);
+                
                 try
                 {
                     _context.Update(timesheetEntry);
@@ -160,7 +210,7 @@ namespace Timesheets.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(timesheetEntry);
+            return View(viewModel);
         }
 
         // GET: TimesheetEntries/Delete/5

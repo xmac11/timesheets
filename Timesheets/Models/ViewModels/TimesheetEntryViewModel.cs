@@ -9,9 +9,12 @@ namespace Timesheets.Models
 {
     public class TimesheetEntryViewModel
     {
-
+        // will be populated with all users for the drop-down list
         public List<string> Users { get; set; } = new List<string>();
+        // will be populated with all projects for the drop-down list
         public List<string> Projects { get; set; } = new List<string>();
+
+        public int Id { get; set; }
 
         [DisplayName("Select employee")]
         [Required(ErrorMessage = "You must select an employee")]
