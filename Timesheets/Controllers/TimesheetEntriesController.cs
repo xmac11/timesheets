@@ -22,6 +22,11 @@ namespace Timesheets.Controllers
         // GET: TimesheetEntries
         public async Task<IActionResult> Index()
         {
+            List<TimesheetEntry> timesheets = _context.TimesheetEntries.Include(t => t.RelatedUser).ToList();
+            foreach (TimesheetEntry timesheet in timesheets)
+            {
+                Console.WriteLine(timesheet);
+            }
             return View(await _context.TimesheetEntries.ToListAsync());
         }
 
