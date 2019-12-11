@@ -10,8 +10,8 @@ namespace Timesheets.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public Department Department { get; set; }
+        public virtual Department Department { get; set; }
         public double CostPerHour { get; set; }
-        public MyUser Manager { get; set; }
+        public virtual MyUser Manager { get; set; }
     }
 }

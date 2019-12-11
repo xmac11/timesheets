@@ -40,16 +40,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="Input.SelectedRoles"></label>
-                <!--
-                    <div>
-                        @for (int i = 0; i < Model.Roles.Count; i++)
-                        {
-                            @Html.CheckBoxFor(s => Model.Roles[i].Selected)
-                            @Html.DisplayFor(s => Model.Roles[i].Text)<br />
-                        }
-                    </div>
+                <select asp-for="Input.SelectedRoles" asp-items="Model.Roles">
+                    @for (int i = 0; i < Model.Roles.Count; i++)
+                    {
+                        Model.Input.SelectedRoles.Add(Model.Roles[i].Value);
+                    }
+                </select>
                 <span asp-validation-for="Input.SelectedRoles" class="text-danger"></span>
-                -->
             </div>
             <div class="form-group">
                 <label asp-for="Input.SelectedDepartment"></label>

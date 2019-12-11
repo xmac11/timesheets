@@ -54,6 +54,7 @@ namespace Timesheets.Areas.Identity.Pages.Account
 
         
         public IList<SelectListItem> Roles = new List<SelectListItem>();
+        //public IList<IdentityRole> Roles { get; set; }
         public IList<SelectListItem> Departments = new List<SelectListItem>();
 
         public class InputModel
@@ -76,10 +77,10 @@ namespace Timesheets.Areas.Identity.Pages.Account
             [Display(Name = "Last Name")]
             public string LastName { get; set; }
 
-            //[Required(ErrorMessage ="You must select at least one role")]
-            [Display(Name ="Roles")]
+            //[Required(ErrorMessage = "You must select at least one role")]
+            [Display(Name = "Roles")]
             public IList<string> SelectedRoles { get; set; }
-            
+
             [Required(ErrorMessage ="You must select a department")]
             [Display(Name = "Department")]
             public int SelectedDepartment { get; set; }
@@ -94,12 +95,15 @@ namespace Timesheets.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            foreach(IdentityRole r in _roleManager.Roles.ToList())
+
+            //List<IdentityRole> idRoles = _roleManager.Roles.ToList();
+
+            foreach (IdentityRole r in _roleManager.Roles.ToList())
             {
                 Roles.Add(new SelectListItem() { Value = r.Name, Text = r.Name });
             }
 
-            foreach(Department d in _context.Departments.ToList())
+            foreach (Department d in _context.Departments.ToList())
             {
                 Departments.Add(new SelectListItem() { Value = d.Id.ToString(), Text = d.Name });
             }
@@ -111,13 +115,22 @@ namespace Timesheets.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+
+                for (int i = 0; i < Roles.Count; i++)
+                {
+                    if (Roles[i].Selected)
+                    {
+                        Input.SelectedRoles.Add(Roles[i].Value);
+                    }
+                }
+
                 Department selectedDepartment = _context.Departments.First(x => x.Id == Input.SelectedDepartment);
 
                 var user = new MyUser { UserName = Input.Email, 
                     Email = Input.Email, 
                     FirstName=Input.FirstName, 
                     LastName=Input.LastName, 
-                    Department = selectedDepartment
+                    Department = selectedDepartment,
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
