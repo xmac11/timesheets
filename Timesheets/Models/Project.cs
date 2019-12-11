@@ -9,6 +9,7 @@ namespace Timesheets.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public int OwnerDeptId { get; set; }
         public virtual Department OwnerDept { get; set; }
 
         public virtual ICollection<DepartmentProject> Departments { get; set; }

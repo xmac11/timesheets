@@ -44,6 +44,13 @@ namespace Timesheets.Data
                 .WithOne(u => u.Department)
                 .HasForeignKey<Department>(ad => ad.DepartmentHeadId);
 
+            // one-to-many (Owned Projects - Deparment)
+            modelBuilder.Entity<Department>()
+                .HasMany(d => d.OwnedProjects)
+                .WithOne(p => p.OwnerDept)
+                .HasForeignKey(p => p.OwnerDeptId)
+                .OnDelete(DeleteBehavior.Restrict); // https://stackoverflow.com/questions/41711772/entity-framework-core-cascade-delete-one-to-many-relationship
+
             modelBuilder.Entity<IdentityRole>().HasData(
                     new IdentityRole() { Name="Admin",NormalizedName="ADMIN" },
                     new IdentityRole() { Name="Employee", NormalizedName="EMPLOYEE" },

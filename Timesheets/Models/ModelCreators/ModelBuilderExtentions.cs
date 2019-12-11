@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Timesheets.Data;
 
 namespace Timesheets.Models.ModelCreators
 {
@@ -10,6 +11,7 @@ namespace Timesheets.Models.ModelCreators
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
+            // seed Departments
             modelBuilder.Entity<Department>().HasData(
                     new Department
                     {
@@ -35,6 +37,16 @@ namespace Timesheets.Models.ModelCreators
                         Name = "Accounting"
                     }
                 );
+
+            // seed Projects
+            modelBuilder.Entity<Project>().HasData(
+                    new Project
+                    {
+                        Id = 1,
+                        Name = "App Develpment",
+                        OwnerDeptId = 1
+                    }
+                ); 
         }
     }
 }

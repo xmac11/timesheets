@@ -12,6 +12,8 @@
     <Compile Remove="Migrations\20191210111840_deptUser.Designer.cs" />
     <Compile Remove="Migrations\20191210155059_seedDepartment.cs" />
     <Compile Remove="Migrations\20191210155059_seedDepartment.Designer.cs" />
+    <Compile Remove="Migrations\20191211182248_seedProject.cs" />
+    <Compile Remove="Migrations\20191211182248_seedProject.Designer.cs" />
   </ItemGroup>
 
 

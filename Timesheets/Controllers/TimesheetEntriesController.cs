@@ -60,10 +60,10 @@ namespace Timesheets.Controllers
                 viewModel.Users.Add(user.UserName);
             }
 
-            /*foreach(Project project in projects)
+            foreach (Project project in projects)
             {
                 viewModel.Projects.Add(project.Name);
-            }*/
+            }
             return View(viewModel);
         }
 

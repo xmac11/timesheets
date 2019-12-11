@@ -13,6 +13,10 @@ namespace Timesheets.Models
         public virtual MyUser DepartmentHead { get; set; }
 
         public virtual ICollection<MyUser> RelatedUsers { get; set; }
+        // one department works on many projects
         public virtual ICollection<DepartmentProject> Projects { get; set; }
+
+        // one deparment onws many projects
+        public virtual ICollection<Project> OwnedProjects { get; set; }
     }
 }
