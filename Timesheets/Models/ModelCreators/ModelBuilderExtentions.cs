@@ -43,7 +43,14 @@ namespace Timesheets.Models.ModelCreators
                     new Project
                     {
                         Id = 1,
-                        Name = "App Develpment",
+                        Name = "App Development",
+                        OwnerDeptId = 1
+                    },
+
+                    new Project
+                    {
+                        Id = 2,
+                        Name = "Website Development",
                         OwnerDeptId = 1
                     }
                 );

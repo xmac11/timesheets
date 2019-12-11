@@ -22,7 +22,7 @@ namespace Timesheets.Controllers
         // GET: TimesheetEntries
         public async Task<IActionResult> Index()
         {
-            List<TimesheetEntry> timesheets = _context.TimesheetEntries.Include(t => t.RelatedUser).ToList();
+            List<TimesheetEntry> timesheets = _context.TimesheetEntries.Include(t => t.RelatedUser).Include(t => t.RelatedProject).ToList();
             foreach (TimesheetEntry timesheet in timesheets)
             {
                 Console.WriteLine(timesheet);
@@ -64,6 +64,7 @@ namespace Timesheets.Controllers
             {
                 viewModel.Projects.Add(project.Name);
             }
+
             return View(viewModel);
         }
 
@@ -77,7 +78,9 @@ namespace Timesheets.Controllers
             if (ModelState.IsValid)
             {
                 List<MyUser> users = _context.Users.ToList();
+                List<Project> projects = _context.Projects.ToList();
 
+                // attach a User to the Timesheet 
                 MyUser relatedUser = null;
                 foreach (MyUser user in users)
                 {
@@ -88,7 +91,18 @@ namespace Timesheets.Controllers
                     }
                 }
 
-                TimesheetEntry timesheetEntry = new TimesheetEntry(relatedUser, null, viewModel.DateCreated, viewModel.HoursWorked);
+                // attach a Project to the Timesheet 
+                Project relatedProject = null;
+                foreach(Project project in projects)
+                {
+                    if(project.Name.Equals(viewModel.ProjectName))
+                    {
+                        relatedProject = project;
+                        break;
+                    }
+                }
+
+                TimesheetEntry timesheetEntry = new TimesheetEntry(relatedUser, relatedProject, viewModel.DateCreated ?? DateTime.Now, viewModel.HoursWorked);
 
                 _context.Add(timesheetEntry);
                 await _context.SaveChangesAsync();

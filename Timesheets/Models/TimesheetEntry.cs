@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,9 +28,14 @@ namespace Timesheets.Models
         public TimesheetEntry() { }
 
         public int Id { get; set; }
+
         public virtual MyUser RelatedUser { get; set; }
+
         public virtual Project RelatedProject { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime DateCreated { get; set; }
+
         public int HoursWorked { get; set; }
     }
 }

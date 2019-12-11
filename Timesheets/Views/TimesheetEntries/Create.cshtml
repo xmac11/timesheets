@@ -15,19 +15,24 @@
             <div class="form-group">
                 <label asp-for="RelatedUserName" class="control-label"></label>
                 <select asp-for="RelatedUserName" asp-items="@(new SelectList(Model.Users))" class="form-control">
+                    <option disabled selected>Select employee...</option>
                 </select>
                 <span asp-validation-for="RelatedUserName" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="ProjectId" class="control-label"></label>
-                <input asp-for="ProjectId" class="form-control" />
-                <span asp-validation-for="ProjectId" class="text-danger"></span>
-            </div>
+                <label asp-for="ProjectName" class="control-label"></label>
+                <select asp-for="ProjectName" asp-items="@(new SelectList(Model.Projects))" class="form-control">
+                    <option disabled selected>Select project...</option>
+                </select>
+                    <span asp-validation-for="ProjectName" class="text-danger"></span>
+</div>
 
             <div class="form-group">
                 <label asp-for="DateCreated" class="control-label"></label>
-                <input asp-for="DateCreated" class="form-control" />
+                <input asp-for="DateCreated" class="form-control"
+                       min = "@DateTime.Now.Year-01-01" max="@DateTime.Now.ToString("yyyy-MM-dd")" 
+                       data-msg-min = "Date must be in @DateTime.Now.Year" data-msg-max = "Date cannot be in the future"/>
                 <span asp-validation-for="DateCreated" class="text-danger"></span>
             </div>
 
