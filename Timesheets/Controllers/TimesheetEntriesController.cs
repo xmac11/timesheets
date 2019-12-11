@@ -38,8 +38,9 @@ namespace Timesheets.Controllers
                 return NotFound();
             }
 
-            var timesheetEntry = await _context.TimesheetEntries
+            var timesheetEntry = await _context.TimesheetEntries.Include(t => t.RelatedUser).Include(t => t.RelatedProject)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (timesheetEntry == null)
             {
                 return NotFound();

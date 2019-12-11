@@ -7,19 +7,48 @@
 <h1>Details</h1>
 
 <div>
-    <h4>TimesheetEntry</h4>
+    <h4>Timesheet Entry (@Html.DisplayFor(model => model.RelatedUser.FirstName) @Html.DisplayFor(model => model.RelatedUser.LastName))</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateCreated)
+        <dt class="col-sm-2">
+            Id
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+
+        <dt class="col-sm-2">
+            Username
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RelatedUser.UserName) 
+        </dd>
+
+        <dt class="col-sm-2">
+            Full name
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RelatedUser.FirstName) @Html.DisplayFor(model => model.RelatedUser.LastName)
+        </dd>
+
+        <dt class="col-sm-2">
+            Project
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RelatedProject.Name)
+        </dd>
+
+        <dt class="col-sm-2">
+            Date
+        </dt>
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.DateCreated)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.HoursWorked)
+
+        <dt class="col-sm-2">
+            Hours Worked
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.HoursWorked)
         </dd>
     </dl>
