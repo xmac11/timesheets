@@ -9,10 +9,10 @@ namespace Timesheets.Models
 {
     public class TimesheetEntryViewModel
     {
-        // will be populated with all users for the drop-down list
-        public List<string> Users { get; set; } = new List<string>();
-        // will be populated with all projects for the drop-down list
-        public List<string> Projects { get; set; } = new List<string>();
+        // will be populated with all usersnames for the drop-down list
+        public List<string> UserNames { get; set; } = new List<string>();
+        // will be populated with all project names for the drop-down list
+        public List<string> ProjectNames { get; set; } = new List<string>();
 
         public int Id { get; set; }
 

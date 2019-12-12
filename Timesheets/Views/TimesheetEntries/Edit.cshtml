@@ -15,7 +15,7 @@
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="RelatedUserName" class="control-label"></label>
-                <select asp-for="RelatedUserName" asp-items="@(new SelectList(Model.Users))" class="form-control">
+                <select asp-for="RelatedUserName" asp-items="@(new SelectList(Model.UserNames))" class="form-control">
                     <option disabled selected>Select employee...</option>
                 </select>
                 <span asp-validation-for="RelatedUserName" class="text-danger"></span>
@@ -23,7 +23,7 @@
 
             <div class="form-group">
                 <label asp-for="ProjectName" class="control-label"></label>
-                <select asp-for="ProjectName" asp-items="@(new SelectList(Model.Projects))" class="form-control">
+                <select asp-for="ProjectName" asp-items="@(new SelectList(Model.ProjectNames))" class="form-control">
                     <option disabled selected>Select project...</option>
                 </select>
                 <span asp-validation-for="ProjectName" class="text-danger"></span>
