@@ -75,11 +75,32 @@ namespace Timesheets.Controllers
             {
                 TimesheetEntry timesheetEntry = _mapper.MapViewModelToTimesheetEntry(viewModel);
 
-                _context.Add(timesheetEntry);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (NoEntryExistsForSameDateAndProject(timesheetEntry))
+                {
+                    _context.Add(timesheetEntry);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    /*this.AddUsernamesToViewModel(viewModel);
+
+                    this.AddProjectNamesToViewModel(viewModel);
+
+                    return View(viewModel);*/
+                    ViewBag.ErrorTitle = "Error";
+                    ViewBag.ErrorMessage = "User already has a timesheet entry for the same date and project";
+                    return View("CustomError");
+                }
             }
             return View(viewModel);
+        }
+
+        private bool NoEntryExistsForSameDateAndProject(TimesheetEntry timesheetEntry)
+        {
+            return _context.TimesheetEntries.First(e => e.DateCreated == timesheetEntry.DateCreated
+                                                    && e.RelatedUser.UserName.Equals(timesheetEntry.RelatedUser.UserName)
+                                                    && e.RelatedProject.Id == timesheetEntry.RelatedProject.Id) == null;
         }
 
         // GET: TimesheetEntries/Edit/5
@@ -129,23 +150,32 @@ namespace Timesheets.Controllers
             {
                 TimesheetEntry timesheetEntry = _mapper.MapViewModelToTimesheetEntry(viewModel);
 
-                try
+                if (NoEntryExistsForSameDateAndProject(timesheetEntry))
                 {
-                    _context.Update(timesheetEntry);
-                    await _context.SaveChangesAsync();
+                    try
+                    {
+                        _context.Update(timesheetEntry);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!TimesheetEntryExists(timesheetEntry.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!TimesheetEntryExists(timesheetEntry.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ViewBag.ErrorTitle = "Error";
+                    ViewBag.ErrorMessage = "User already has a timesheet entry for the same date and project";
+                    return View("CustomError");
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(viewModel);
         }

@@ -11,7 +11,7 @@ namespace Timesheets.Models
         public override bool IsValid(object date)
         {
             return (DateTime) date >= new DateTime(DateTime.Now.Year, 1, 1) &&
-                (DateTime)date <= DateTime.Now;
+                (DateTime) date <= DateTime.Now;
         }
     }
 }
