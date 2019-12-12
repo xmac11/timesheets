@@ -11,7 +11,7 @@ namespace Timesheets.Models.ViewModels
     {
 
         // will be populated with all department names for the drop-down list (to choose the Owner Department)
-        //public List<string> DepartmentNames { get; set; } = new List<string>();
+        public List<string> DepartmentNames { get; set; } = new List<string>();
 
         public int Id { get; set; }
 

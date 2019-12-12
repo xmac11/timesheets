@@ -47,7 +47,7 @@ namespace Timesheets.Controllers
 
             List<DepartmentProject> departmentProjects = _context.DepartmentProjects
                                                         .Include(dp => dp.Department)
-                                                        .Where(p => p.ProjectId == id)
+                                                        .Where(dp => dp.ProjectId == id)
                                                         .ToList();
 
             ProjectViewModel viewModel = new ProjectViewModel();
