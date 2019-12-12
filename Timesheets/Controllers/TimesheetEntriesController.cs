@@ -103,6 +103,14 @@ namespace Timesheets.Controllers
                                                     && e.RelatedProject.Id == timesheetEntry.RelatedProject.Id) == null;
         }
 
+        private bool NoEntryExistsForSameDateAndProjectExcludingSelf(TimesheetEntry timesheetEntry)
+        {
+            var otherEntries = _context.TimesheetEntries.Where(e => e.Id != timesheetEntry.Id);
+            return otherEntries.FirstOrDefault(e => e.DateCreated == timesheetEntry.DateCreated
+                                                    && e.RelatedUser.UserName.Equals(timesheetEntry.RelatedUser.UserName)
+                                                    && e.RelatedProject.Id == timesheetEntry.RelatedProject.Id) == null;
+        }
+
         // GET: TimesheetEntries/Edit/5
         public IActionResult Edit(int? id)
         {
@@ -150,7 +158,7 @@ namespace Timesheets.Controllers
             {
                 TimesheetEntry timesheetEntry = _mapper.MapViewModelToTimesheetEntry(viewModel);
 
-                if (NoEntryExistsForSameDateAndProject(timesheetEntry))
+                if (NoEntryExistsForSameDateAndProjectExcludingSelf(timesheetEntry))
                 {
                     try
                     {
