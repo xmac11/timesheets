@@ -18,16 +18,14 @@ namespace Timesheets.Controllers
         private readonly ApplicationDbContext _context;
         private readonly ITimesheetEntryMapper _mapper;
         private readonly UserManager<MyUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<MyUser> _signInManager;
 
 
-        public TimesheetEntriesController([FromServices] ApplicationDbContext context, ITimesheetEntryMapper mapper, UserManager<MyUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<MyUser> signInManager)
+        public TimesheetEntriesController([FromServices] ApplicationDbContext context, ITimesheetEntryMapper mapper, UserManager<MyUser> userManager, SignInManager<MyUser> signInManager)
         {
             _context = context;
             _mapper = mapper;
             _userManager = userManager;
-            _roleManager = roleManager;
             _signInManager = signInManager;
         }
 
@@ -35,7 +33,6 @@ namespace Timesheets.Controllers
         public async Task<IActionResult> Index()
         {
             List<TimesheetEntry> timesheets = new List<TimesheetEntry>();
-            //var currentUser = _signInManager.UserManager.GetUserAsync(_signInManager.Context.User);
             
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             MyUser currentUser = await _userManager.FindByIdAsync(currentUserId);
@@ -67,18 +64,6 @@ namespace Timesheets.Controllers
                     .ToListAsync());
             }
 
-
-
-            var mpla = _context.TimesheetEntries
-                                     .Include(t => t.RelatedUser)
-                                     .Include(t => t.RelatedProject)
-                                     .ToList();
-
-            /*foreach (TimesheetEntry timesheet in timesheets)
-            {
-                Console.WriteLine(timesheet);
-            }*/
-            //return View(await _context.TimesheetEntries.ToListAsync());
             return View(new List<TimesheetEntry>());
         }
 
