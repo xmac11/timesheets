@@ -11,20 +11,45 @@ namespace Timesheets.Data
     {
         public static void SeedUsers(UserManager<MyUser> userManager)
         {
+            // admin
             if (userManager.FindByEmailAsync("admin@test.com").Result == null)
             {
-                MyUser user = new MyUser
+                MyUser admin = new MyUser
                 {
                     UserName = "admin@test.com",
                     Email = "admin@test.com",
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    DepartmentId = 1
                 };
 
-                IdentityResult result = userManager.CreateAsync(user, "123456").Result;
+                IdentityResult result = userManager.CreateAsync(admin, "123456").Result;
 
                 if (result.Succeeded)
                 {
-                    userManager.AddToRoleAsync(user, "Admin").Wait();
+                    userManager.AddToRoleAsync(admin, "Admin").Wait();
+                }
+            }
+
+            // employee
+            if (userManager.FindByEmailAsync("c.makrylakis@gmail.com").Result == null)
+            {
+                MyUser employee = new MyUser
+                {
+                    UserName = "c.makrylakis@gmail.com",
+                    Email = "c.makrylakis@gmail.com",
+                    EmailConfirmed = true,
+                    FirstName = "Charalampos",
+                    LastName = "Makrylakis",
+                    CostPerHour = 10,
+                    DepartmentId = 1,
+                    ManagerId = "ca544165-5208-4554-b1ae-5ffb0b11d8ea" // Id of admin
+                };
+
+                IdentityResult result = userManager.CreateAsync(employee, "111111").Result;
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRoleAsync(employee, "Employee").Wait();
                 }
             }
         }

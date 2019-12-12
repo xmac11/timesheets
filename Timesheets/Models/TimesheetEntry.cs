@@ -37,5 +37,10 @@ namespace Timesheets.Models
         public DateTime DateCreated { get; set; }
 
         public int HoursWorked { get; set; }
+
+        public double TotalCost 
+        { 
+            get { return RelatedUser.CostPerHour * HoursWorked; } 
+        }
     }
 }

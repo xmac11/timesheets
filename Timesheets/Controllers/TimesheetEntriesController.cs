@@ -98,7 +98,8 @@ namespace Timesheets.Controllers
 
         private bool NoEntryExistsForSameDateAndProject(TimesheetEntry timesheetEntry)
         {
-            return _context.TimesheetEntries.First(e => e.DateCreated == timesheetEntry.DateCreated
+            return !_context.TimesheetEntries.Any() || 
+                _context.TimesheetEntries.FirstOrDefault(e => e.DateCreated == timesheetEntry.DateCreated
                                                     && e.RelatedUser.UserName.Equals(timesheetEntry.RelatedUser.UserName)
                                                     && e.RelatedProject.Id == timesheetEntry.RelatedProject.Id) == null;
         }
