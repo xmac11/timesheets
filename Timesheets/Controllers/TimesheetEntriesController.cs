@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -15,22 +17,69 @@ namespace Timesheets.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ITimesheetEntryMapper _mapper;
+        private readonly UserManager<MyUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<MyUser> _signInManager;
 
-        public TimesheetEntriesController([FromServices] ApplicationDbContext context, ITimesheetEntryMapper mapper)
+
+        public TimesheetEntriesController([FromServices] ApplicationDbContext context, ITimesheetEntryMapper mapper, UserManager<MyUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<MyUser> signInManager)
         {
             _context = context;
             _mapper = mapper;
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _signInManager = signInManager;
         }
 
         // GET: TimesheetEntries
         public async Task<IActionResult> Index()
         {
-            List<TimesheetEntry> timesheets = _context.TimesheetEntries.Include(t => t.RelatedUser).Include(t => t.RelatedProject).ToList();
-            foreach (TimesheetEntry timesheet in timesheets)
+            List<TimesheetEntry> timesheets = new List<TimesheetEntry>();
+            //var currentUser = _signInManager.UserManager.GetUserAsync(_signInManager.Context.User);
+            
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            MyUser currentUser = await _userManager.FindByIdAsync(currentUserId);
+            var roles = await _userManager.GetRolesAsync(currentUser);
+
+            if (roles.Contains("Admin"))
+            {
+                return View(await _context.TimesheetEntries
+                                     .Include(t => t.RelatedUser)
+                                     .Include(t => t.RelatedProject)
+                                     .ToListAsync());
+            }
+
+            if (roles.Contains("Manager"))
+            {
+                return View(await _context.TimesheetEntries
+                    .Include(t => t.RelatedUser)
+                    .Include(t => t.RelatedProject)
+                    .Where(t => t.RelatedUser.DepartmentId == currentUser.DepartmentId)
+                    .ToListAsync());
+            }
+
+            if (roles.Contains("Employee"))
+            {
+                return View(await _context.TimesheetEntries
+                    .Include(t => t.RelatedUser)
+                    .Include(t => t.RelatedProject)
+                    .Where(t=> t.RelatedUser.Id == currentUserId)
+                    .ToListAsync());
+            }
+
+
+
+            var mpla = _context.TimesheetEntries
+                                     .Include(t => t.RelatedUser)
+                                     .Include(t => t.RelatedProject)
+                                     .ToList();
+
+            /*foreach (TimesheetEntry timesheet in timesheets)
             {
                 Console.WriteLine(timesheet);
-            }
-            return View(await _context.TimesheetEntries.ToListAsync());
+            }*/
+            //return View(await _context.TimesheetEntries.ToListAsync());
+            return View(new List<TimesheetEntry>());
         }
 
         // GET: TimesheetEntries/Details/5
@@ -98,7 +147,7 @@ namespace Timesheets.Controllers
 
         private bool NoEntryExistsForSameDateAndProject(TimesheetEntry timesheetEntry)
         {
-            return !_context.TimesheetEntries.Any() || 
+            return !_context.TimesheetEntries.Any() ||
                 _context.TimesheetEntries.FirstOrDefault(e => e.DateCreated == timesheetEntry.DateCreated
                                                     && e.RelatedUser.UserName.Equals(timesheetEntry.RelatedUser.UserName)
                                                     && e.RelatedProject.Id == timesheetEntry.RelatedProject.Id) == null;
@@ -181,7 +230,7 @@ namespace Timesheets.Controllers
             return View(viewModel);
         }
 
-        
+
 
         // private helper
         private void AddProjectNamesToViewModel(TimesheetEntryViewModel viewModel)
