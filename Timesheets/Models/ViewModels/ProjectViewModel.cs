@@ -11,7 +11,7 @@ namespace Timesheets.Models.ViewModels
     {
 
         // will be populated with all department names for the drop-down list (to choose the Owner Department)
-        public List<string> DepartmentNames { get; set; } = new List<string>();
+        //public List<string> DepartmentNames { get; set; } = new List<string>();
 
         public int Id { get; set; }
 
@@ -24,7 +24,7 @@ namespace Timesheets.Models.ViewModels
         public string OwnerDeptName { get; set; }
 
         [DisplayName("Add related departments")]
-        public List<string> RelatedDepartments { get; set; }
+        public List<Department> RelatedDepartments { get; set; } = new List<Department>();
 
         [DisplayName("Add related users")]
         public List<string> RelatedUsers { get; set; }

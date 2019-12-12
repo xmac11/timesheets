@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Timesheets.Data;
 using Timesheets.Models;
+using Timesheets.Models.ViewModels;
 
 namespace Timesheets.Controllers
 {
@@ -35,14 +36,30 @@ namespace Timesheets.Controllers
             }
 
             var project = await _context.Projects
-                .Include(p => p.OwnerDept)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                            .Include(p => p.OwnerDept)
+                            .Include(p => p.Departments)
+                            .FirstOrDefaultAsync(p => p.Id == id);
+
             if (project == null)
             {
                 return NotFound();
             }
 
-            return View(project);
+            List<DepartmentProject> departmentProjects = _context.DepartmentProjects
+                                                        .Include(dp => dp.Department)
+                                                        .Where(p => p.ProjectId == id)
+                                                        .ToList();
+
+            ProjectViewModel viewModel = new ProjectViewModel();
+            viewModel.Id = project.Id;
+            viewModel.Name = project.Name;
+            viewModel.OwnerDeptName = project.OwnerDept.Name;
+            foreach (DepartmentProject departmentProject in departmentProjects)
+            {
+                viewModel.RelatedDepartments.Add(departmentProject.Department);
+            }
+
+            return View(viewModel);
         }
 
         // GET: Projects/Create
