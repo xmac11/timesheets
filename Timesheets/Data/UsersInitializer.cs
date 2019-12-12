@@ -27,6 +27,31 @@ namespace Timesheets.Data
                 if (result.Succeeded)
                 {
                     userManager.AddToRoleAsync(admin, "Admin").Wait();
+                    userManager.AddToRoleAsync(admin, "Manager").Wait();
+                    userManager.AddToRoleAsync(admin, "Employee").Wait();
+                }
+            }
+
+            // manager
+            if (userManager.FindByEmailAsync("ariskallergis@gmail.com").Result == null)
+            {
+                MyUser manager = new MyUser
+                {
+                    UserName = "ariskallergis@gmail.com",
+                    Email = "ariskallergis@gmail.com",
+                    EmailConfirmed = true,
+                    FirstName = "Aris",
+                    LastName = "Kallergis",
+                    CostPerHour = 20,
+                    DepartmentId = 1
+                };
+
+                IdentityResult result = userManager.CreateAsync(manager, "222222").Result;
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRoleAsync(manager, "Manager").Wait();
+                    userManager.AddToRoleAsync(manager, "Employee").Wait();
                 }
             }
 
@@ -42,7 +67,7 @@ namespace Timesheets.Data
                     LastName = "Makrylakis",
                     CostPerHour = 10,
                     DepartmentId = 1,
-                    ManagerId = "ca544165-5208-4554-b1ae-5ffb0b11d8ea" // Id of admin
+                    ManagerId = "3fd0ed5e-6a7f-431f-afd2-5ede6d1d7a23" // Id of admin
                 };
 
                 IdentityResult result = userManager.CreateAsync(employee, "111111").Result;
