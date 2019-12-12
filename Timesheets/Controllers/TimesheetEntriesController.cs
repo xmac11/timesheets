@@ -78,30 +78,9 @@ namespace Timesheets.Controllers
         {
             if (ModelState.IsValid)
             {
-                List<MyUser> users = _context.Users.ToList();
-                List<Project> projects = _context.Projects.ToList();
 
-                // attach a User to the Timesheet 
-                MyUser relatedUser = null;
-                foreach (MyUser user in users)
-                {
-                    if (user.UserName.Equals(viewModel.RelatedUserName))
-                    {
-                        relatedUser = user;
-                        break;
-                    }
-                }
-
-                // attach a Project to the Timesheet 
-                Project relatedProject = null;
-                foreach(Project project in projects)
-                {
-                    if(project.Name.Equals(viewModel.ProjectName))
-                    {
-                        relatedProject = project;
-                        break;
-                    }
-                }
+                MyUser relatedUser = attachUserToTimesheet(viewModel);
+                Project relatedProject = attachProjectToTimesheet(viewModel);
 
                 TimesheetEntry timesheetEntry = new TimesheetEntry(relatedUser, relatedProject, viewModel.DateCreated ?? DateTime.Now, viewModel.HoursWorked);
 
@@ -165,33 +144,12 @@ namespace Timesheets.Controllers
 
             if (ModelState.IsValid)
             {
-                List<MyUser> users = _context.Users.ToList();
-                List<Project> projects = _context.Projects.ToList();
 
-                // attach a User to the Timesheet 
-                MyUser relatedUser = null;
-                foreach (MyUser user in users)
-                {
-                    if (user.UserName.Equals(viewModel.RelatedUserName))
-                    {
-                        relatedUser = user;
-                        break;
-                    }
-                }
-
-                // attach a Project to the Timesheet 
-                Project relatedProject = null;
-                foreach (Project project in projects)
-                {
-                    if (project.Name.Equals(viewModel.ProjectName))
-                    {
-                        relatedProject = project;
-                        break;
-                    }
-                }
+                MyUser relatedUser = attachUserToTimesheet(viewModel);
+                Project relatedProject = attachProjectToTimesheet(viewModel);
 
                 TimesheetEntry timesheetEntry = new TimesheetEntry(id, relatedUser, relatedProject, viewModel.DateCreated ?? DateTime.Now, viewModel.HoursWorked);
-                
+
                 try
                 {
                     _context.Update(timesheetEntry);
@@ -211,6 +169,40 @@ namespace Timesheets.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(viewModel);
+        }
+
+        private Project attachProjectToTimesheet(TimesheetEntryViewModel viewModel)
+        {
+            List<Project> projects = _context.Projects.ToList();
+            // attach a Project to the Timesheet 
+            Project relatedProject = null;
+            foreach (Project project in projects)
+            {
+                if (project.Name.Equals(viewModel.ProjectName))
+                {
+                    relatedProject = project;
+                    break;
+                }
+            }
+
+            return relatedProject;
+        }
+
+        private MyUser attachUserToTimesheet(TimesheetEntryViewModel viewModel)
+        {
+            List<MyUser> users = _context.Users.ToList();
+            // attach a User to the Timesheet 
+            MyUser relatedUser = null;
+            foreach (MyUser user in users)
+            {
+                if (user.UserName.Equals(viewModel.RelatedUserName))
+                {
+                    relatedUser = user;
+                    break;
+                }
+            }
+
+            return relatedUser;
         }
 
         // GET: TimesheetEntries/Delete/5
