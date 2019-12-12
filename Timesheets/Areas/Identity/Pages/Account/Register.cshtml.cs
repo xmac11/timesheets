@@ -131,6 +131,7 @@ namespace Timesheets.Areas.Identity.Pages.Account
                     FirstName=Input.FirstName, 
                     LastName=Input.LastName, 
                     Department = selectedDepartment,
+                    DepartmentId = selectedDepartment.Id
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
