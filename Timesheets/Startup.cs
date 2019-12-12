@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Timesheets.Models;
+using Timesheets.Mappers;
 
 namespace Timesheets
 {
@@ -45,6 +46,8 @@ namespace Timesheets
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddScoped<ITimesheetEntryMapper, TimesheetEntryMapper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

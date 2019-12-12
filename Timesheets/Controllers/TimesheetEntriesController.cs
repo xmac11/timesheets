@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Timesheets.Data;
+using Timesheets.Mappers;
 using Timesheets.Models;
 
 namespace Timesheets.Controllers
@@ -13,10 +14,12 @@ namespace Timesheets.Controllers
     public class TimesheetEntriesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ITimesheetEntryMapper _mapper;
 
-        public TimesheetEntriesController(ApplicationDbContext context)
+        public TimesheetEntriesController([FromServices] ApplicationDbContext context, ITimesheetEntryMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: TimesheetEntries
@@ -70,11 +73,7 @@ namespace Timesheets.Controllers
         {
             if (ModelState.IsValid)
             {
-
-                MyUser relatedUser = AttachUserToTimesheet(viewModel);
-                Project relatedProject = AttachProjectToTimesheet(viewModel);
-
-                TimesheetEntry timesheetEntry = new TimesheetEntry(relatedUser, relatedProject, viewModel.DateCreated ?? DateTime.Now, viewModel.HoursWorked);
+                TimesheetEntry timesheetEntry = _mapper.MapViewModelToTimesheetEntry(viewModel);
 
                 _context.Add(timesheetEntry);
                 await _context.SaveChangesAsync();
@@ -128,11 +127,7 @@ namespace Timesheets.Controllers
 
             if (ModelState.IsValid)
             {
-
-                MyUser relatedUser = AttachUserToTimesheet(viewModel);
-                Project relatedProject = AttachProjectToTimesheet(viewModel);
-
-                TimesheetEntry timesheetEntry = new TimesheetEntry(id, relatedUser, relatedProject, viewModel.DateCreated ?? DateTime.Now, viewModel.HoursWorked);
+                TimesheetEntry timesheetEntry = _mapper.MapViewModelToTimesheetEntry(viewModel);
 
                 try
                 {
@@ -155,41 +150,7 @@ namespace Timesheets.Controllers
             return View(viewModel);
         }
 
-        // private helper
-        private MyUser AttachUserToTimesheet(TimesheetEntryViewModel viewModel)
-        {
-            List<MyUser> users = _context.Users.ToList();
-            // attach a User to the Timesheet 
-            MyUser relatedUser = null;
-            foreach (MyUser user in users)
-            {
-                if (user.UserName.Equals(viewModel.RelatedUserName))
-                {
-                    relatedUser = user;
-                    break;
-                }
-            }
-
-            return relatedUser;
-        }
-
-        // private helper
-        private Project AttachProjectToTimesheet(TimesheetEntryViewModel viewModel)
-        {
-            List<Project> projects = _context.Projects.ToList();
-            // attach a Project to the Timesheet 
-            Project relatedProject = null;
-            foreach (Project project in projects)
-            {
-                if (project.Name.Equals(viewModel.ProjectName))
-                {
-                    relatedProject = project;
-                    break;
-                }
-            }
-
-            return relatedProject;
-        }
+        
 
         // private helper
         private void AddProjectNamesToViewModel(TimesheetEntryViewModel viewModel)
