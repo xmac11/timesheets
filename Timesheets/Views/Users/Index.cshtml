@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<Timesheets.Models.MyUser>
 
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<MyUser> userManager
 @{
     ViewData["Title"] = "Index";
 }
@@ -42,37 +44,43 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CostPerHour)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DepartmentId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Department.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ManagerId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Manager.FirstName)
-                @Html.DisplayFor(modelItem => item.Manager.LastName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-        }
-    </tbody>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CostPerHour)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DepartmentId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Department.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ManagerId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Manager.FirstName)
+                    @Html.DisplayFor(modelItem => item.Manager.LastName)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    
+                    @if (!userManager.GetRolesAsync(item).Result.Contains("Manager") && 
+                        (!userManager.GetRolesAsync(item).Result.Contains("Admin")))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id"> Delete </a>
+                    }
+                    </td>
+
+             </tr>
+          }
+</tbody>
 </table>

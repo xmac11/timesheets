@@ -54,9 +54,7 @@ namespace Timesheets.Controllers
                 Password = user.PasswordHash,
                 CostPerHour = user.CostPerHour,
                 DepartmentId = user.DepartmentId,
-                Department = user.Department,
                 ManagerId = user.ManagerId,
-                Manager = user.Manager
             };
 
             var managers = await _userManager.GetUsersInRoleAsync("Manager");
@@ -101,6 +99,34 @@ namespace Timesheets.Controllers
             return View(viewModel);
         }
 
+
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
         private bool UserExists(string id)
         {
             return _context.Users.Any(u => u.Id == id);

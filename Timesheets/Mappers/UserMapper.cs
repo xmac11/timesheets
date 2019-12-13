@@ -26,9 +26,7 @@ namespace Timesheets.Mappers
             await userManager.ChangePasswordAsync(user, user.PasswordHash, viewModel.Password);
             user.CostPerHour = viewModel.CostPerHour;
             user.DepartmentId = viewModel.DepartmentId;
-            user.Department = await _context.Departments.FindAsync(viewModel.DepartmentId);
             user.ManagerId = viewModel.ManagerId;
-            user.Manager = await _context.Users.FindAsync(viewModel.ManagerId);
 
             return user;
         }
