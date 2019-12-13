@@ -29,16 +29,51 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         @{
+                            
                             if (SignInManager.Context.User.IsInRole("Admin")) // User.IsInRole("Admin")
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Departments" asp-action="Index">Manage Departments</a>
                                 </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="Index">Manage Projects</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Manage Users</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Create">Add New Timesheet entry</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Edit">Modify a Timesheet entry</a>
+                                </li>
+                            }
+                            if (SignInManager.Context.User.IsInRole("Manager"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Create">Add New Timesheet entry</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Edit">Modify a Timesheet entry</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Statistics</a>
+                                </li>
+                            }
+                            if (SignInManager.Context.User.IsInRole("Employee"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Index">View Timesheet entries</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Create">Add New Timesheet entry</a>
+                                </li>
                             }
                         }
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Index">View Timesheets</a>
-                        </li>
+
 
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="Index">Projects</a>
