@@ -32,7 +32,7 @@ namespace Timesheets.Data
                 }
             }
 
-            // manager
+            // manager, employee
             if (userManager.FindByEmailAsync("ariskallergis@gmail.com").Result == null)
             {
                 MyUser manager = new MyUser
@@ -55,6 +55,7 @@ namespace Timesheets.Data
                 }
             }
 
+            // manager, employee
             if (userManager.FindByEmailAsync("maryksenou@gmail.com").Result == null)
             {
                 MyUser manager = new MyUser
@@ -89,7 +90,7 @@ namespace Timesheets.Data
                     LastName = "Makrylakis",
                     CostPerHour = 10,
                     DepartmentId = 1,
-                    ManagerId = "3fd0ed5e-6a7f-431f-afd2-5ede6d1d7a23" // Id of admin
+                    ManagerId = userManager.FindByEmailAsync("admin@test.com").Result.Id // Id of admin
                 };
 
                 IdentityResult result = userManager.CreateAsync(employee, "111111").Result;
@@ -111,7 +112,7 @@ namespace Timesheets.Data
                     LastName = "Tsak",
                     CostPerHour = 10,
                     DepartmentId = 2,
-                    ManagerId = "b385f3b3-6213-4f85-b248-f5b61591a743" // Id of Mary
+                    ManagerId = userManager.FindByEmailAsync("maryksenou@gmail.com").Result.Id // Id of Mary
                 };
 
                 IdentityResult result = userManager.CreateAsync(employee, "444444").Result;
@@ -133,7 +134,7 @@ namespace Timesheets.Data
                     LastName = "Pitsios",
                     CostPerHour = 10,
                     DepartmentId = 2,
-                    ManagerId = "b385f3b3-6213-4f85-b248-f5b61591a743" // Id of Mary
+                    ManagerId = userManager.FindByEmailAsync("maryksenou@gmail.com").Result.Id // Id of Mary
                 };
 
                 IdentityResult result = userManager.CreateAsync(employee, "555555").Result;
