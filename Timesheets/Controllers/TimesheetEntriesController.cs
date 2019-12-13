@@ -51,7 +51,7 @@ namespace Timesheets.Controllers
                 return View(await _context.TimesheetEntries
                     .Include(t => t.RelatedUser)
                     .Include(t => t.RelatedProject)
-                    .Where(t => t.RelatedUser.DepartmentId == currentUser.DepartmentId)
+                    .Where(t => t.RelatedUser.ManagerId.Equals(currentUser.Id))
                     .ToListAsync());
             }
 
@@ -244,7 +244,7 @@ namespace Timesheets.Controllers
             }
             else if(roles.Contains("Manager"))
             {
-                users = _context.Users.Where(u => u.DepartmentId == currentUser.DepartmentId).ToList();
+                users = _context.Users.Where(u => u.ManagerId.Equals(currentUser.Id)).ToList();
             }
             else if (roles.Contains("Employee"))
             {

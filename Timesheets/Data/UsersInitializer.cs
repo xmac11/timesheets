@@ -78,7 +78,30 @@ namespace Timesheets.Data
                 }
             }
 
-            // employee
+            // manager, employee
+            if (userManager.FindByEmailAsync("manager@gmail.com").Result == null)
+            {
+                MyUser manager = new MyUser
+                {
+                    UserName = "manager@gmail.com",
+                    Email = "manager@gmail.com",
+                    EmailConfirmed = true,
+                    FirstName = "Nikos",
+                    LastName = "Dimitriou",
+                    CostPerHour = 20,
+                    DepartmentId = 2
+                };
+
+                IdentityResult result = userManager.CreateAsync(manager, "111111").Result;
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRoleAsync(manager, "Manager").Wait();
+                    userManager.AddToRoleAsync(manager, "Employee").Wait();
+                }
+            }
+
+            // employee (with manager Admin)
             if (userManager.FindByEmailAsync("c.makrylakis@gmail.com").Result == null)
             {
                 MyUser employee = new MyUser
@@ -101,6 +124,7 @@ namespace Timesheets.Data
                 }
             }
 
+            // employee (with manager Mary)
             if (userManager.FindByEmailAsync("kostastask@gmail.com").Result == null)
             {
                 MyUser employee = new MyUser
@@ -123,6 +147,7 @@ namespace Timesheets.Data
                 }
             }
 
+            // employee (with manager Mary)
             if (userManager.FindByEmailAsync("dimitrispitsios@gmail.com").Result == null)
             {
                 MyUser employee = new MyUser
@@ -138,6 +163,29 @@ namespace Timesheets.Data
                 };
 
                 IdentityResult result = userManager.CreateAsync(employee, "555555").Result;
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRoleAsync(employee, "Employee").Wait();
+                }
+            }
+
+            // employee (with manager Nikos)
+            if (userManager.FindByEmailAsync("iosifgeme@gmail.com").Result == null)
+            {
+                MyUser employee = new MyUser
+                {
+                    UserName = "iosifgeme@gmail.com",
+                    Email = "iosifgeme@gmail.com",
+                    EmailConfirmed = true,
+                    FirstName = "Iosif",
+                    LastName = "Gemenitzoglou",
+                    CostPerHour = 10,
+                    DepartmentId = 2,
+                    ManagerId = userManager.FindByEmailAsync("manager@gmail.com").Result.Id // Id of Nikos (manager)
+                };
+
+                IdentityResult result = userManager.CreateAsync(employee, "111111").Result;
 
                 if (result.Succeeded)
                 {
