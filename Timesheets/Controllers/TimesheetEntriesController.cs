@@ -63,7 +63,6 @@ namespace Timesheets.Controllers
                     .Where(t=> t.RelatedUser.Id == currentUserId)
                     .ToListAsync());
             }
-
             return View(new List<TimesheetEntry>());
         }
 

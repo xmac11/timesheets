@@ -1,26 +1,109 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Timesheets.Data;
+using Timesheets.Mappers;
+using Timesheets.Models;
+using Timesheets.Models.ViewModels;
 
 namespace Timesheets.Controllers
 {
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IUserMapper _mapper;
+        private readonly UserManager<MyUser> _userManager;
 
-        public UsersController(ApplicationDbContext context)
+        public UsersController(ApplicationDbContext context, IUserMapper mapper, UserManager<MyUser> userManager)
         {
             _context = context;
+            _mapper = mapper;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Users;
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            UserViewModel viewModel = new UserViewModel
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Password = user.PasswordHash,
+                CostPerHour = user.CostPerHour,
+                DepartmentId = user.DepartmentId,
+                Department = user.Department,
+                ManagerId = user.ManagerId,
+                Manager = user.Manager
+            };
+
+            var managers = await _userManager.GetUsersInRoleAsync("Manager");
+            ViewData["Managers"] = new SelectList(managers, viewModel.Manager);
+            //ViewData["DepartmentHeadId"] = new SelectList(_context.Users, "Id", "Id", department.DepartmentHeadId);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, UserViewModel viewModel)
+        {
+            if (id != viewModel.Id)
+            {
+                return NotFound();
+            }
+
+            
+
+            if (ModelState.IsValid)
+            {
+                MyUser user = await _mapper.MapViewModelToUser(viewModel, _userManager);
+                try
+                {
+                    _context.Update(user);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserExists(user.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            
+            return View(viewModel);
+        }
+
+        private bool UserExists(string id)
+        {
+            return _context.Users.Any(u => u.Id == id);
         }
     }
 }
