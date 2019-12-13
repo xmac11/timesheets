@@ -43,18 +43,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Manage Users</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Create">Add New Timesheet entry</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Edit">Modify a Timesheet entry</a>
-                                </li>
                             }
                             if (SignInManager.Context.User.IsInRole("Manager"))
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Create">Add New Timesheet entry</a>
-                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Edit">Modify a Timesheet entry</a>
                                 </li>

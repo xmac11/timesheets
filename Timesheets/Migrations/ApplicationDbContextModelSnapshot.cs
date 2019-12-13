@@ -48,22 +48,22 @@ namespace Timesheets.Migrations
                 b.HasData(
                     new
                     {
-                        Id = "5465d384-0411-4c77-bc22-11724d88a39b",
-                        ConcurrencyStamp = "d1497e0c-6905-4e17-a4e4-8a330c9d5b4c",
+                        Id = "a4ac2ce5-91cb-4c3d-b251-0637b6bdd7b9",
+                        ConcurrencyStamp = "a8432d48-5e8b-4cfc-b05f-1b92891e2c4f",
                         Name = "Admin",
                         NormalizedName = "ADMIN"
                     },
                     new
                     {
-                        Id = "9c544d7f-1178-4e54-95c5-cb7aedeb3a62",
-                        ConcurrencyStamp = "695d7053-8afd-4277-9f68-219cce2d819f",
+                        Id = "71b2adf3-110f-4fc2-b10d-4d50b29e0d05",
+                        ConcurrencyStamp = "35ab4555-6f02-47e9-93f5-814fdda2d52e",
                         Name = "Employee",
                         NormalizedName = "EMPLOYEE"
                     },
                     new
                     {
-                        Id = "52fffd16-f9bd-4028-a93e-d96a65f17e8d",
-                        ConcurrencyStamp = "418d59ac-ea73-49d9-8723-6d81e267d195",
+                        Id = "5cbe45bc-a5eb-41de-9f85-0a09875004be",
+                        ConcurrencyStamp = "c6d7dc9c-4e2f-4128-98a3-1d1dd78310a2",
                         Name = "Manager",
                         NormalizedName = "MANAGER"
                     });
@@ -233,7 +233,7 @@ namespace Timesheets.Migrations
 
                 b.HasIndex("ProjectId");
 
-                b.ToTable("DepartmentProjects");
+                b.ToTable("DepartmentProject");
 
                 b.HasData(
                     new

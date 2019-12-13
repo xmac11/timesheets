@@ -1,19 +1,22 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Timesheets.Models
+namespace Timesheets.Models.ViewModels
 {
-    public class MyUser : IdentityUser
+    public class UserViewModel
     {
+
+        public string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Password { get; set; }
         public int DepartmentId { get; set; }
-        public virtual Department Department { get; set; }
+        public Department Department { get; set; }
         public double CostPerHour { get; set; }
         public string ManagerId { get; set; }
-        public virtual MyUser Manager { get; set; }
+        public MyUser Manager { get; set; }
+
     }
 }
