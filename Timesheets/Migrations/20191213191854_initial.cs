@@ -138,9 +138,9 @@ namespace Timesheets.Migrations
                     AccessFailedCount = table.Column<int>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
+                    DepartmentId = table.Column<int>(nullable: false),
                     CostPerHour = table.Column<double>(nullable: false),
-                    ManagerId = table.Column<string>(nullable: true),
-                    DepartmentId = table.Column<int>(nullable: true)
+                    ManagerId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -150,7 +150,7 @@ namespace Timesheets.Migrations
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AspNetUsers_AspNetUsers_ManagerId",
                         column: x => x.ManagerId,
@@ -166,7 +166,7 @@ namespace Timesheets.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
-                    OwnerDeptId = table.Column<int>(nullable: true)
+                    OwnerDeptId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -180,7 +180,7 @@ namespace Timesheets.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DepartmentProject",
+                name: "DepartmentProjects",
                 columns: table => new
                 {
                     DepartmentId = table.Column<int>(nullable: false),
@@ -188,15 +188,15 @@ namespace Timesheets.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DepartmentProject", x => new { x.DepartmentId, x.ProjectId });
+                    table.PrimaryKey("PK_DepartmentProjects", x => new { x.DepartmentId, x.ProjectId });
                     table.ForeignKey(
-                        name: "FK_DepartmentProject_Departments_DepartmentId",
+                        name: "FK_DepartmentProjects_Departments_DepartmentId",
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DepartmentProject_Projects_ProjectId",
+                        name: "FK_DepartmentProjects_Projects_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "Id",
@@ -234,17 +234,43 @@ namespace Timesheets.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "e3632061-9fea-464c-a2a5-ca87b5614eca", "a98a6938-c3bc-4564-afa0-4c691d4df01d", "Admin", "ADMIN" });
+                values: new object[,]
+                {
+                    { "caa9e09d-48dc-44e0-afb4-ad443f13fb2e", "3fc6ef14-dbad-4e0a-b94d-beeb347be237", "Admin", "ADMIN" },
+                    { "82bc0678-6a1c-4410-9413-48b74287c7db", "3eb85bba-5fd3-49fc-ab90-4c58480dcc4c", "Employee", "EMPLOYEE" },
+                    { "7cf700b7-c5d3-4312-b687-5e6236b5e29d", "ab65a643-d13a-4de1-8cfd-d7d9dc42cf70", "Manager", "MANAGER" }
+                });
 
             migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "3376940d-f67e-47ad-a385-a71d153b4ece", "b6902e5b-f52d-49fb-aede-a67ee60e00f0", "Employee", "EMPLOYEE" });
+                table: "Departments",
+                columns: new[] { "Id", "DepartmentHeadId", "Name" },
+                values: new object[,]
+                {
+                    { 1, null, "IT" },
+                    { 2, null, "R&D" },
+                    { 3, null, "Human Resources" },
+                    { 4, null, "Accounting" }
+                });
 
             migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "bfe2fd19-d79f-4fe7-b8ef-bab4e67791d5", "11d49e39-e3c2-48fa-a391-2fac7d0efb74", "Manager", "MANAGER" });
+                table: "Projects",
+                columns: new[] { "Id", "Name", "OwnerDeptId" },
+                values: new object[] { 1, "App Development", 1 });
+
+            migrationBuilder.InsertData(
+                table: "Projects",
+                columns: new[] { "Id", "Name", "OwnerDeptId" },
+                values: new object[] { 2, "Website Development", 1 });
+
+            migrationBuilder.InsertData(
+                table: "DepartmentProjects",
+                columns: new[] { "DepartmentId", "ProjectId" },
+                values: new object[] { 2, 1 });
+
+            migrationBuilder.InsertData(
+                table: "DepartmentProjects",
+                columns: new[] { "DepartmentId", "ProjectId" },
+                values: new object[] { 3, 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -296,8 +322,8 @@ namespace Timesheets.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DepartmentProject_ProjectId",
-                table: "DepartmentProject",
+                name: "IX_DepartmentProjects_ProjectId",
+                table: "DepartmentProjects",
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
@@ -385,7 +411,7 @@ namespace Timesheets.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "DepartmentProject");
+                name: "DepartmentProjects");
 
             migrationBuilder.DropTable(
                 name: "TimesheetEntries");

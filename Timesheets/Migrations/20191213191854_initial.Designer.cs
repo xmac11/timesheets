@@ -10,8 +10,8 @@ using Timesheets.Data;
 namespace Timesheets.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20191212115545_migr")]
-    partial class migr
+    [Migration("20191213191854_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,22 +50,22 @@ namespace Timesheets.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8b2353f9-399f-4ce7-9a63-45734f9eec06",
-                            ConcurrencyStamp = "c63e0b4b-9107-4a8b-b2af-91667a6b0f27",
+                            Id = "caa9e09d-48dc-44e0-afb4-ad443f13fb2e",
+                            ConcurrencyStamp = "3fc6ef14-dbad-4e0a-b94d-beeb347be237",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "4c80bfc2-bcfd-487c-93d5-181a494d5a4a",
-                            ConcurrencyStamp = "b66f4a53-fcaf-4698-b17f-cd31480db4f3",
+                            Id = "82bc0678-6a1c-4410-9413-48b74287c7db",
+                            ConcurrencyStamp = "3eb85bba-5fd3-49fc-ab90-4c58480dcc4c",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "7dabd878-89c4-45eb-92c5-ac91b26f5b2e",
-                            ConcurrencyStamp = "edf64450-7a3d-4f03-bbfb-d454da50da91",
+                            Id = "7cf700b7-c5d3-4312-b687-5e6236b5e29d",
+                            ConcurrencyStamp = "ab65a643-d13a-4de1-8cfd-d7d9dc42cf70",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         });
@@ -235,7 +235,7 @@ namespace Timesheets.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("DepartmentProject");
+                    b.ToTable("DepartmentProjects");
 
                     b.HasData(
                         new
