@@ -92,7 +92,7 @@ namespace Timesheets.Controllers
 
             await this.AddUsernamesToViewModel(viewModel);
 
-            this.AddProjectNamesToViewModel(viewModel);
+            await this.AddProjectNamesToViewModel(viewModel);
 
             return View(viewModel);
         }
@@ -165,7 +165,7 @@ namespace Timesheets.Controllers
 
             await this.AddUsernamesToViewModel(viewModel);
 
-            this.AddProjectNamesToViewModel(viewModel);
+            await this.AddProjectNamesToViewModel(viewModel);
 
             return View(viewModel);
         }
@@ -219,9 +219,30 @@ namespace Timesheets.Controllers
 
 
         // private helper
-        private void AddProjectNamesToViewModel(TimesheetEntryViewModel viewModel)
+        private async Task AddProjectNamesToViewModel(TimesheetEntryViewModel viewModel)
         {
-            List<Project> projects = _context.Projects.ToList();
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            MyUser currentUser = await _userManager.FindByIdAsync(currentUserId);
+            var roles = await _userManager.GetRolesAsync(currentUser);
+
+            List<Project> projects = new List<Project>();
+
+            if (roles.Contains("Admin"))
+            {
+                projects = _context.DepartmentProjects
+                                      .Include(dp => dp.Project)
+                                      .Select(dp => dp.Project)
+                                      .ToList();
+            }
+            else if (roles.Contains("Manager") || roles.Contains("Employee"))
+            {
+                projects = _context.DepartmentProjects
+                                      .Include(dp => dp.Project)
+                                      .Where(dp => dp.DepartmentId == currentUser.DepartmentId)
+                                      .Select(dp => dp.Project)
+                                      .ToList();
+            }
+
             foreach (Project project in projects)
             {
                 viewModel.ProjectNames.Add(project.Name);
