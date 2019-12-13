@@ -32,6 +32,34 @@ namespace Timesheets.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        // GET: TimesheetEntries/Create
+        public async Task<IActionResult> Create()
+        {
+            UserViewModel viewModel = new UserViewModel();
+
+            var managers = await _userManager.GetUsersInRoleAsync("Manager");
+            ViewData["Managers"] = new SelectList(managers, viewModel.ManagerId);
+            return View(viewModel);
+        }
+
+        // POST: TimesheetEntries/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(UserViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                MyUser user = await _mapper.MapViewModelToUser(viewModel, _userManager);
+
+                _context.Add(user);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(viewModel);
+        }
+
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -51,7 +79,6 @@ namespace Timesheets.Controllers
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Password = user.PasswordHash,
                 CostPerHour = user.CostPerHour,
                 DepartmentId = user.DepartmentId,
                 ManagerId = user.ManagerId,
@@ -59,7 +86,6 @@ namespace Timesheets.Controllers
 
             var managers = await _userManager.GetUsersInRoleAsync("Manager");
             ViewData["Managers"] = new SelectList(managers, viewModel.Manager);
-            //ViewData["DepartmentHeadId"] = new SelectList(_context.Users, "Id", "Id", department.DepartmentHeadId);
             return View(viewModel);
         }
 
@@ -72,7 +98,7 @@ namespace Timesheets.Controllers
                 return NotFound();
             }
 
-            
+
 
             if (ModelState.IsValid)
             {
@@ -95,7 +121,7 @@ namespace Timesheets.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            
+
             return View(viewModel);
         }
 
