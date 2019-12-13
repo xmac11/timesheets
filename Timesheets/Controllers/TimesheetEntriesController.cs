@@ -117,11 +117,6 @@ namespace Timesheets.Controllers
                 }
                 else
                 {
-                    /*this.AddUsernamesToViewModel(viewModel);
-
-                    this.AddProjectNamesToViewModel(viewModel);
-
-                    return View(viewModel);*/
                     ViewBag.ErrorTitle = "Error";
                     ViewBag.ErrorMessage = "User already has a timesheet entry for the same date and project";
                     return View("CustomError");
@@ -132,8 +127,15 @@ namespace Timesheets.Controllers
 
         private bool NoEntryExistsForSameDateAndProject(TimesheetEntry timesheetEntry)
         {
-            return !_context.TimesheetEntries.Any() ||
-                _context.TimesheetEntries.FirstOrDefault(e => e.DateCreated == timesheetEntry.DateCreated
+            return _context.TimesheetEntries.FirstOrDefault(e => e.DateCreated == timesheetEntry.DateCreated
+                                                    && e.RelatedUser.UserName.Equals(timesheetEntry.RelatedUser.UserName)
+                                                    && e.RelatedProject.Id == timesheetEntry.RelatedProject.Id) == null;
+        }
+
+        private bool NoEntryExistsForSameDateAndProjectExcludingSelf(TimesheetEntry timesheetEntry)
+        {
+            var otherEntries = _context.TimesheetEntries.Where(e => e.Id != timesheetEntry.Id);
+            return otherEntries.FirstOrDefault(e => e.DateCreated == timesheetEntry.DateCreated
                                                     && e.RelatedUser.UserName.Equals(timesheetEntry.RelatedUser.UserName)
                                                     && e.RelatedProject.Id == timesheetEntry.RelatedProject.Id) == null;
         }
@@ -185,7 +187,7 @@ namespace Timesheets.Controllers
             {
                 TimesheetEntry timesheetEntry = _mapper.MapViewModelToTimesheetEntry(viewModel);
 
-                if (NoEntryExistsForSameDateAndProject(timesheetEntry))
+                if (NoEntryExistsForSameDateAndProjectExcludingSelf(timesheetEntry))
                 {
                     try
                     {
