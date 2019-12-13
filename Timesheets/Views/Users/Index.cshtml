@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Timesheets.Models.Department>
+﻿@model IEnumerable<Timesheets.Models.MyUser>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,10 +13,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                First Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DepartmentHead)
+                Last Name
+            </th>
+            <th>
+                E-mail
+            </th>
+            <th>
+                Phone Number
             </th>
             <th></th>
         </tr>
@@ -25,11 +31,16 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.FirstName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DepartmentHead.FirstName)
-                @Html.DisplayFor(modelItem => item.DepartmentHead.LastName)
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
