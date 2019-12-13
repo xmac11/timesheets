@@ -87,11 +87,11 @@ namespace Timesheets.Controllers
         }
 
         // GET: TimesheetEntries/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             TimesheetEntryViewModel viewModel = new TimesheetEntryViewModel();
 
-            this.AddUsernamesToViewModel(viewModel);
+            await this.AddUsernamesToViewModel(viewModel);
 
             this.AddProjectNamesToViewModel(viewModel);
 
@@ -141,7 +141,7 @@ namespace Timesheets.Controllers
         }
 
         // GET: TimesheetEntries/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -164,7 +164,7 @@ namespace Timesheets.Controllers
             };
 
 
-            this.AddUsernamesToViewModel(viewModel);
+            await this.AddUsernamesToViewModel(viewModel);
 
             this.AddProjectNamesToViewModel(viewModel);
 
@@ -230,13 +230,32 @@ namespace Timesheets.Controllers
         }
 
         // private helper
-        private void AddUsernamesToViewModel(TimesheetEntryViewModel viewModel)
+        private async Task AddUsernamesToViewModel(TimesheetEntryViewModel viewModel)
         {
-            List<MyUser> users = _context.Users.ToList();
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            MyUser currentUser = await _userManager.FindByIdAsync(currentUserId);
+            var roles = await _userManager.GetRolesAsync(currentUser);
+
+            List<MyUser> users = new List<MyUser>();
+
+            if (roles.Contains("Admin"))
+            {
+                users = _context.Users.ToList();
+            }
+            else if(roles.Contains("Manager"))
+            {
+                users = _context.Users.Where(u => u.DepartmentId == currentUser.DepartmentId).ToList();
+            }
+            else if (roles.Contains("Employee"))
+            {
+                users = _context.Users.Where(u => u.Id == currentUser.Id).ToList();
+            }
+
             foreach (MyUser user in users)
             {
                 viewModel.UserNames.Add(user.UserName);
             }
+
         }
 
         // GET: TimesheetEntries/Delete/5
