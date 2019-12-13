@@ -1,11 +1,10 @@
-﻿@model IEnumerable<Timesheets.Models.TimesheetEntry>
-
+﻿@model IEnumerable<Timesheets.Models.Project>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Timesheet entries</h1>
+<h1>Projects</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -17,18 +16,11 @@
                 Id
             </th>
             <th>
-                Username
+                Name
             </th>
             <th>
-                Project
+                Owner Department
             </th>
-            <th>
-                Date
-            </th>
-            <th>
-                Hours Worked
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -38,16 +30,10 @@
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RelatedUser.UserName)
+                @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RelatedProject.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateCreated)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.HoursWorked)
+                @Html.DisplayFor(modelItem => item.OwnerDept.Name)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
