@@ -7,6 +7,15 @@ namespace Timesheets.Models
 {
     public class Project
     {
+        public Project(int id, string name, Department ownerDept)
+        {
+            Id = id;
+            Name = name;
+            OwnerDept = ownerDept;
+        }
+
+        public Project() { }
+
         public int Id { get; set; }
         public string Name { get; set; }
         public int OwnerDeptId { get; set; }

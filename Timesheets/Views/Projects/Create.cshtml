@@ -20,7 +20,10 @@
 
             <div class="form-group">
                 <label asp-for="OwnerDeptName" class="control-label"></label>
-                <!-- <select asp-for="OwnerDeptName" asp-items="(new SelectList(Model.))" class="form-control" /> -->
+                <!-- Html.DropDownList("OwnerDeptName", "Please select...") -->
+                <select asp-for="OwnerDeptName" asp-items="@(new SelectList(Model.DepartmentNames))" class="form-control">
+                    <option disabled selected>Select employee...</option>
+                </select>
                 <span asp-validation-for="OwnerDeptName" class="text-danger"></span>
             </div>
            

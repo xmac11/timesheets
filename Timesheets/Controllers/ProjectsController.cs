@@ -65,8 +65,21 @@ namespace Timesheets.Controllers
         // GET: Projects/Create
         public IActionResult Create()
         {
-            ViewData["OwnerDeptId"] = new SelectList(_context.Departments, "Id", "Id");
-            return View();
+            ProjectViewModel viewModel = new ProjectViewModel();
+
+            this.AddDepartmentNamesToViewModel(viewModel);
+
+            ViewData["OwnerDeptName"] = new SelectList(_context.Departments, "Name", "Name");
+            return View(viewModel);
+        }
+
+        private void AddDepartmentNamesToViewModel(ProjectViewModel viewModel)
+        {
+            List<Department> departments = _context.Departments.ToList();
+            foreach (Department department in departments)
+            {
+                viewModel.DepartmentNames.Add(department.Name);
+            }
         }
 
         // POST: Projects/Create
@@ -74,10 +87,14 @@ namespace Timesheets.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,OwnerDeptId")] Project project)
+        public async Task<IActionResult> Create(ProjectViewModel viewModel)
         {
+            Project project = null;
+
             if (ModelState.IsValid)
             {
+                Department ownerDepartment = _context.Departments.First(d => d.Name == viewModel.OwnerDeptName);
+                project = new Project(viewModel.Id, viewModel.Name, ownerDepartment);
                 _context.Add(project);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
