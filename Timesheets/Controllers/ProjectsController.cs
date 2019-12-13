@@ -220,33 +220,30 @@ namespace Timesheets.Controllers
                 }
 
                 // clear relationship table for this project
-                List<DepartmentProject> departmentProjects = _context.DepartmentProjects
-                                                                    .Include(dp => dp.Department)
-                                                                    .Include(dp => dp.Project)
-                                                                    .Where(dp => dp.ProjectId == id)
-                                                                    .ToList();
-
-                foreach (DepartmentProject departmentProject in departmentProjects)
-                {
-                    _context.Remove(departmentProject);
-                }
-                _context.SaveChanges();
+                this.ClearDepartmentProjects(id);
 
                 // add new entries in relationship table
-                for (int i = 0; i < viewModel.RelatedDepartments.Count; i++)
-                {
-                    DepartmentProject departmentProject = new DepartmentProject()
-                    {
-                        DepartmentId = viewModel.RelatedDepartments[i].Id,
-                        ProjectId = project.Id
-                    };
-                    _context.Add(departmentProject);
-                }
+                this.CreateDepartmentProjects(viewModel, project);
+
                 await _context.SaveChangesAsync();
-                
                 return RedirectToAction(nameof(Index));
             }
             return View(viewModel);
+        }
+
+        private void ClearDepartmentProjects(int id)
+        {
+            List<DepartmentProject> departmentProjects = _context.DepartmentProjects
+                                                                                .Include(dp => dp.Department)
+                                                                                .Include(dp => dp.Project)
+                                                                                .Where(dp => dp.ProjectId == id)
+                                                                                .ToList();
+
+            foreach (DepartmentProject departmentProject in departmentProjects)
+            {
+                _context.Remove(departmentProject);
+            }
+            _context.SaveChanges();
         }
 
         // GET: Projects/Delete/5
