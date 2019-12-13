@@ -68,6 +68,10 @@ namespace Timesheets.Controllers
             ProjectViewModel viewModel = new ProjectViewModel();
 
             this.AddDepartmentNamesToViewModel(viewModel);
+            foreach (string name in viewModel.DepartmentNames)
+            {
+                viewModel.AreSelected.Add(false);
+            }
 
             ViewData["OwnerDeptName"] = new SelectList(_context.Departments, "Name", "Name");
             return View(viewModel);
@@ -93,14 +97,49 @@ namespace Timesheets.Controllers
 
             if (ModelState.IsValid)
             {
-                Department ownerDepartment = _context.Departments.First(d => d.Name == viewModel.OwnerDeptName);
-                project = new Project(viewModel.Id, viewModel.Name, ownerDepartment);
+                Department ownerDepartment = _context.Departments.First(department => department.Name == viewModel.OwnerDeptName);
+
+                this.AddRelatedDepartments(viewModel);
+
+                project = new Project(viewModel.Name, ownerDepartment);
+
                 _context.Add(project);
+                await _context.SaveChangesAsync();
+
+                // create relationship table
+                this.CreateDepartmentProjects(viewModel, project);
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["OwnerDeptId"] = new SelectList(_context.Departments, "Id", "Id", project.OwnerDeptId);
             return View(project);
+        }
+
+        private void CreateDepartmentProjects(ProjectViewModel viewModel, Project project)
+        {
+            for (int i = 0; i < viewModel.RelatedDepartments.Count; i++)
+            {
+                DepartmentProject departmentProject = new DepartmentProject()
+                {
+                    DepartmentId = viewModel.RelatedDepartments[i].Id,
+                    ProjectId = project.Id
+                };
+                _context.Add(departmentProject);
+            }
+        }
+
+        private void AddRelatedDepartments(ProjectViewModel viewModel)
+        {
+            for (int i = 0; i < viewModel.DepartmentNames.Count; i++)
+            {
+                if (viewModel.AreSelected[i])
+                {
+                    string departmentName = viewModel.DepartmentNames[i];
+                    Department department = _context.Departments.First(d => d.Name.Equals(departmentName));
+                    viewModel.RelatedDepartments.Add(department);
+                }
+            }
         }
 
         // GET: Projects/Edit/5

@@ -26,10 +26,6 @@ namespace Timesheets.Models.ViewModels
         [DisplayName("Add related departments")]
         public List<Department> RelatedDepartments { get; set; } = new List<Department>();
 
-        [DisplayName("Add related users")]
-        public List<string> RelatedUsers { get; set; }
-
-        // bool isSelected (?)
-
+        public List<bool> AreSelected { get; set; } = new List<bool>();
     }
 }

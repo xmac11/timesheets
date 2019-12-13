@@ -7,9 +7,8 @@ namespace Timesheets.Models
 {
     public class Project
     {
-        public Project(int id, string name, Department ownerDept)
+        public Project(string name, Department ownerDept)
         {
-            Id = id;
             Name = name;
             OwnerDept = ownerDept;
         }
