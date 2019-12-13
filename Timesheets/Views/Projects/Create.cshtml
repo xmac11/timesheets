@@ -20,7 +20,6 @@
 
             <div class="form-group">
                 <label asp-for="OwnerDeptName" class="control-label"></label>
-                <!-- Html.DropDownList("OwnerDeptName", "Please select...") -->
                 <select asp-for="OwnerDeptName" asp-items="@(new SelectList(Model.DepartmentNames))" class="form-control">
                     <option disabled selected>Select an owner department...</option>
                 </select>

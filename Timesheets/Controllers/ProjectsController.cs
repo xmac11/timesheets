@@ -45,21 +45,29 @@ namespace Timesheets.Controllers
                 return NotFound();
             }
 
-            List<DepartmentProject> departmentProjects = _context.DepartmentProjects
-                                                        .Include(dp => dp.Department)
-                                                        .Where(dp => dp.ProjectId == id)
-                                                        .ToList();
+            ProjectViewModel viewModel = new ProjectViewModel()
+            {
+                Id = project.Id,
+                Name = project.Name,
+                OwnerDeptName = project.OwnerDept.Name
+            };
 
-            ProjectViewModel viewModel = new ProjectViewModel();
-            viewModel.Id = project.Id;
-            viewModel.Name = project.Name;
-            viewModel.OwnerDeptName = project.OwnerDept.Name;
+            this.AddRelatedDepartments(id, viewModel);
+
+            return View(viewModel);
+        }
+
+        private void AddRelatedDepartments(int? id, ProjectViewModel viewModel)
+        {
+            List<DepartmentProject> departmentProjects = _context.DepartmentProjects
+                                                                    .Include(dp => dp.Department)
+                                                                    .Where(dp => dp.ProjectId == id)
+                                                                    .ToList();
+
             foreach (DepartmentProject departmentProject in departmentProjects)
             {
                 viewModel.RelatedDepartments.Add(departmentProject.Department);
             }
-
-            return View(viewModel);
         }
 
         // GET: Projects/Create
@@ -68,7 +76,8 @@ namespace Timesheets.Controllers
             ProjectViewModel viewModel = new ProjectViewModel();
 
             this.AddDepartmentNamesToViewModel(viewModel);
-            foreach (string name in viewModel.DepartmentNames)
+
+            for (int i = 0; i < viewModel.DepartmentNames.Count; i++)
             {
                 viewModel.AreSelected.Add(false);
             }
@@ -99,7 +108,7 @@ namespace Timesheets.Controllers
             {
                 Department ownerDepartment = _context.Departments.First(department => department.Name == viewModel.OwnerDeptName);
 
-                this.AddRelatedDepartments(viewModel);
+                this.AddSelectedDepartments(viewModel);
 
                 project = new Project(viewModel.Name, ownerDepartment);
 
@@ -129,7 +138,7 @@ namespace Timesheets.Controllers
             }
         }
 
-        private void AddRelatedDepartments(ProjectViewModel viewModel)
+        private void AddSelectedDepartments(ProjectViewModel viewModel)
         {
             for (int i = 0; i < viewModel.DepartmentNames.Count; i++)
             {
@@ -143,20 +152,36 @@ namespace Timesheets.Controllers
         }
 
         // GET: Projects/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var project = await _context.Projects.FindAsync(id);
+            var project = _context.Projects.Include(p => p.OwnerDept).First(p => p.Id == id);
             if (project == null)
             {
                 return NotFound();
             }
+
+            ProjectViewModel viewModel = new ProjectViewModel()
+            {
+                Id = project.Id,
+                Name = project.Name,
+                OwnerDeptName = project.OwnerDept.Name,
+            };
+
+            this.AddDepartmentNamesToViewModel(viewModel);
+            this.AddRelatedDepartments(id, viewModel);
+            for(int i = 0; i < viewModel.DepartmentNames.Count; i++)
+            {
+                bool isSelected = viewModel.RelatedDepartments.Exists(d => d.Name == viewModel.DepartmentNames[i]);
+                viewModel.AreSelected.Add(isSelected);
+            }
+
             ViewData["OwnerDeptId"] = new SelectList(_context.Departments, "Id", "Id", project.OwnerDeptId);
-            return View(project);
+            return View(viewModel);
         }
 
         // POST: Projects/Edit/5
@@ -164,15 +189,19 @@ namespace Timesheets.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,OwnerDeptId")] Project project)
+        public async Task<IActionResult> Edit(int id, ProjectViewModel viewModel)
         {
-            if (id != project.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                Department ownerDepartment = _context.Departments.First(department => department.Name == viewModel.OwnerDeptName);
+                this.AddSelectedDepartments(viewModel);
+                Project project = new Project(viewModel.Id, viewModel.Name, ownerDepartment);
+
                 try
                 {
                     _context.Update(project);
@@ -189,10 +218,35 @@ namespace Timesheets.Controllers
                         throw;
                     }
                 }
+
+                // clear relationship table for this project
+                List<DepartmentProject> departmentProjects = _context.DepartmentProjects
+                                                                    .Include(dp => dp.Department)
+                                                                    .Include(dp => dp.Project)
+                                                                    .Where(dp => dp.ProjectId == id)
+                                                                    .ToList();
+
+                foreach (DepartmentProject departmentProject in departmentProjects)
+                {
+                    _context.Remove(departmentProject);
+                }
+                _context.SaveChanges();
+
+                // add new entries in relationship table
+                for (int i = 0; i < viewModel.RelatedDepartments.Count; i++)
+                {
+                    DepartmentProject departmentProject = new DepartmentProject()
+                    {
+                        DepartmentId = viewModel.RelatedDepartments[i].Id,
+                        ProjectId = project.Id
+                    };
+                    _context.Add(departmentProject);
+                }
+                await _context.SaveChangesAsync();
+                
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OwnerDeptId"] = new SelectList(_context.Departments, "Id", "Id", project.OwnerDeptId);
-            return View(project);
+            return View(viewModel);
         }
 
         // GET: Projects/Delete/5

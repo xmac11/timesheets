@@ -13,6 +13,13 @@ namespace Timesheets.Models
             OwnerDept = ownerDept;
         }
 
+        public Project(int id, string name, Department ownerDept)
+        {
+            Id = id;
+            Name = name;
+            OwnerDept = ownerDept;
+        }
+
         public Project() { }
 
         public int Id { get; set; }
