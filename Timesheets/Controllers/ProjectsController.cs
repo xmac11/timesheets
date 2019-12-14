@@ -37,10 +37,11 @@ namespace Timesheets.Controllers
             {
                 projects = await _context.Projects.Include(p => p.OwnerDept).ToListAsync();
             }
-            else if (roles.Contains("Manager") || roles.Contains("Employee"))
+            else if (roles.Contains("Manager"))
             {
                 projects = await _context.DepartmentProjects
                                          .Include(dp => dp.Project)
+                                         .Include(dp => dp.Project.OwnerDept)
                                          .Where(dp => dp.DepartmentId == currentUser.DepartmentId)
                                          .Select(dp => dp.Project)
                                          .ToListAsync();
