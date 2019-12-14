@@ -211,12 +211,11 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 
     <!-- Bootstrap core JavaScript-->
-    <script src="~/jquery/jquery.min.js"></script>
-    <script src="~/bootstrap/js/bootstrap.bundle.min.js"></script>
+    @* <script src="~/jquery/jquery.min.js"></script> *@
+    @* <script src="~/bootstrap/js/bootstrap.bundle.min.js"></script> *@
 
     <!-- Core plugin JavaScript-->
     <script src="~/jquery-easing/jquery.easing.min.js"></script>
@@ -226,12 +225,12 @@
     <script src="~/datatables/jquery.dataTables.js"></script>
     <script src="~/datatables/dataTables.bootstrap4.js"></script>
 
-    <!-- Custom scripts for all pages-->
-    <script src="~/js/site.min.js"></script>
-
     <!-- Demo scripts for this page-->
-    <script src="datatables/datatables-demo.js"></script>
-    <script src="chart.js/chart-area-demo.js"></script>
+    <script src="~/datatables/datatables.js"></script>
+    <script src="~/chart.js/Chart.js"></script>
+
+    <script src="~/js/site.js"></script>
+
 
 </body>
 
