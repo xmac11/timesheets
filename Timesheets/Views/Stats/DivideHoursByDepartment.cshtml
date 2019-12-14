@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewData["Title"] = "DivideHoursByDepartment";
+}
+
+<h1>Hours worked by department</h1>
+
+<html>
+<head>
+    <script src="~/chart.js/Chart.min.js"></script>
+    <script src="~/jquery/jquery.min.js"></script>
+    <script src="~/bootstrap/js/bootstrap.min.js"></script>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        #chart_container {
+            width: 1000px;
+            height: 1000px;
+            border: 1px solid #ddd;
+            padding: 1px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="chart_container">
+        <canvas id="pie_chart">
+        </canvas>
+    </div>
+
+    <script>
+
+        var departmentNames = @Html.Raw(Json.Serialize(ViewBag.Labels));
+        var hours = @Html.Raw(Json.Serialize(ViewBag.Hours));
+
+        var ctx = $('#pie_chart');
+
+        var myPieChart = new Chart(ctx, {
+                                type: 'pie',
+                                data:
+                                    {
+                                        labels: departmentNames,
+                                        datasets: [{
+                                            label: "Total hours per department",
+                                            data: hours,
+                                            backgroundColor: [
+                                                'rgba(242, 166, 54, 0.5)',
+                                                'rgba(145, 65, 72, 0.5)',
+                                                'rgba(74, 25, 92, 0.5)',
+                                                'rgba(34, 139, 34, 0.5)'
+                                            ],
+                                            borderColor: [
+                                                'rgba(242, 166, 54)',
+                                                'rgba(145, 65, 72)',
+                                                'rgba(74, 25, 92)',
+                                                'rgba(34, 139, 34)'
+                                            ],
+                                            borderWidth: 1
+                                        }]
+                                    }
+});
+
+    </script>
+
+</body>
+</html>
