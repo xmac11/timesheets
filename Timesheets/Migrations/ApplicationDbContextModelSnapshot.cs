@@ -48,22 +48,22 @@ namespace Timesheets.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "caa9e09d-48dc-44e0-afb4-ad443f13fb2e",
-                            ConcurrencyStamp = "3fc6ef14-dbad-4e0a-b94d-beeb347be237",
+                            Id = "2d362005-3ca3-4596-8d0e-b92c2af67b23",
+                            ConcurrencyStamp = "cd616b09-7230-4944-9368-9f37a5f9f33a",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "82bc0678-6a1c-4410-9413-48b74287c7db",
-                            ConcurrencyStamp = "3eb85bba-5fd3-49fc-ab90-4c58480dcc4c",
+                            Id = "3f47534d-d4f6-4b8e-8ce1-ace068b6149f",
+                            ConcurrencyStamp = "c692a478-1850-48ca-b7e9-c2a6a09bf495",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "7cf700b7-c5d3-4312-b687-5e6236b5e29d",
-                            ConcurrencyStamp = "ab65a643-d13a-4de1-8cfd-d7d9dc42cf70",
+                            Id = "8f2952ec-a7be-4641-a8ad-c16283613ea5",
+                            ConcurrencyStamp = "0832f400-7771-4d32-9561-2dcbf19814fb",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         });
@@ -233,7 +233,7 @@ namespace Timesheets.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("DepartmentProjects");
+                    b.ToTable("DepartmentProject");
 
                     b.HasData(
                         new
@@ -496,8 +496,9 @@ namespace Timesheets.Migrations
                         .HasForeignKey("RelatedProjectId");
 
                     b.HasOne("Timesheets.Models.MyUser", "RelatedUser")
-                        .WithMany()
-                        .HasForeignKey("RelatedUserId");
+                        .WithMany("TimesheetEntries")
+                        .HasForeignKey("RelatedUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

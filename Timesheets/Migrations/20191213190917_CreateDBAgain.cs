@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Timesheets.Migrations
 {
-    public partial class initial : Migration
+    public partial class CreateDBAgain : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -180,7 +180,7 @@ namespace Timesheets.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DepartmentProjects",
+                name: "DepartmentProject",
                 columns: table => new
                 {
                     DepartmentId = table.Column<int>(nullable: false),
@@ -188,15 +188,15 @@ namespace Timesheets.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DepartmentProjects", x => new { x.DepartmentId, x.ProjectId });
+                    table.PrimaryKey("PK_DepartmentProject", x => new { x.DepartmentId, x.ProjectId });
                     table.ForeignKey(
-                        name: "FK_DepartmentProjects_Departments_DepartmentId",
+                        name: "FK_DepartmentProject_Departments_DepartmentId",
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DepartmentProjects_Projects_ProjectId",
+                        name: "FK_DepartmentProject_Projects_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "Id",
@@ -228,7 +228,7 @@ namespace Timesheets.Migrations
                         column: x => x.RelatedUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -236,9 +236,9 @@ namespace Timesheets.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "caa9e09d-48dc-44e0-afb4-ad443f13fb2e", "3fc6ef14-dbad-4e0a-b94d-beeb347be237", "Admin", "ADMIN" },
-                    { "82bc0678-6a1c-4410-9413-48b74287c7db", "3eb85bba-5fd3-49fc-ab90-4c58480dcc4c", "Employee", "EMPLOYEE" },
-                    { "7cf700b7-c5d3-4312-b687-5e6236b5e29d", "ab65a643-d13a-4de1-8cfd-d7d9dc42cf70", "Manager", "MANAGER" }
+                    { "2d362005-3ca3-4596-8d0e-b92c2af67b23", "cd616b09-7230-4944-9368-9f37a5f9f33a", "Admin", "ADMIN" },
+                    { "3f47534d-d4f6-4b8e-8ce1-ace068b6149f", "c692a478-1850-48ca-b7e9-c2a6a09bf495", "Employee", "EMPLOYEE" },
+                    { "8f2952ec-a7be-4641-a8ad-c16283613ea5", "0832f400-7771-4d32-9561-2dcbf19814fb", "Manager", "MANAGER" }
                 });
 
             migrationBuilder.InsertData(
@@ -263,12 +263,12 @@ namespace Timesheets.Migrations
                 values: new object[] { 2, "Website Development", 1 });
 
             migrationBuilder.InsertData(
-                table: "DepartmentProjects",
+                table: "DepartmentProject",
                 columns: new[] { "DepartmentId", "ProjectId" },
                 values: new object[] { 2, 1 });
 
             migrationBuilder.InsertData(
-                table: "DepartmentProjects",
+                table: "DepartmentProject",
                 columns: new[] { "DepartmentId", "ProjectId" },
                 values: new object[] { 3, 1 });
 
@@ -322,8 +322,8 @@ namespace Timesheets.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DepartmentProjects_ProjectId",
-                table: "DepartmentProjects",
+                name: "IX_DepartmentProject_ProjectId",
+                table: "DepartmentProject",
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
@@ -411,7 +411,7 @@ namespace Timesheets.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "DepartmentProjects");
+                name: "DepartmentProject");
 
             migrationBuilder.DropTable(
                 name: "TimesheetEntries");
