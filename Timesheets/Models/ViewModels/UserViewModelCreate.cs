@@ -20,25 +20,28 @@ namespace Timesheets.Models.ViewModels
         
         [DisplayName("Enter Password")]
         [DataType(DataType.Password)]
+        [Required(ErrorMessage = "Please enter password")]
         public string Password { get; set; }
 
-        [DisplayName ("Enter E-mail Address")]
+        [DisplayName ("Enter e-mail Address")]
         [Required (ErrorMessage = "Please enter e-mail address")]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        [DisplayName ("Choose Roles")]
+        [DisplayName ("Select Roles")]
         [Required (ErrorMessage = "Please select at least one role")]
         public IList<string> Roles { get; set; }
 
-        [DisplayName("Choose Department")]
+        [DisplayName("Select Department")]
         public int DepartmentId { get; set; }
 
         [DisplayName("Enter Cost Per Hour")]
         [Required(ErrorMessage = "Please enter cost per hour")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please enter a positive value")]
         public double CostPerHour { get; set; }
 
-        [DisplayName("Choose Manager")]
+        [DisplayName("Select Manager")]
+        [Required(ErrorMessage = "Please select manager")]
         public string ManagerId { get; set; }
     }
 }
