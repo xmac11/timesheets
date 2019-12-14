@@ -10,6 +10,6 @@ namespace Timesheets.Mappers
 {
     public interface IUserMapper
     {
-        public Task<MyUser> MapViewModelToUser(UserViewModel viewModel, UserManager<MyUser> userManager);
+        public Task<MyUser> MapViewModelToUser(UserViewModel viewModel, UserManager<MyUser> userManager, RoleManager<IdentityRole> roleManager);
     }
 }

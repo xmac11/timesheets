@@ -27,13 +27,7 @@
                 Cost per Hour
             </th>
             <th>
-                DepartmentId
-            </th>
-            <th>
                 Department
-            </th>
-            <th>
-                ManagerId
             </th>
             <th>
                 Manager
@@ -58,17 +52,10 @@
                     @Html.DisplayFor(modelItem => item.CostPerHour)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DepartmentId)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.Department.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ManagerId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Manager.FirstName)
-                    @Html.DisplayFor(modelItem => item.Manager.LastName)
+                    @Html.DisplayFor(modelItem => item.Manager.UserName)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
