@@ -159,7 +159,7 @@ namespace Timesheets.Data
                     LastName = "Makrylakis",
                     CostPerHour = 10,
                     DepartmentId = 1,
-                    ManagerId = userManager.FindByEmailAsync("admin@test.com").Result.Id // Id of admin
+                    ManagerId = userManager.FindByEmailAsync("ariskallergis@gmail.com").Result.Id // Id of Aris
                 };
 
                 IdentityResult result = userManager.CreateAsync(employee, "111111").Result;
