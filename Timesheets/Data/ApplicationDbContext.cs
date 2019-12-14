@@ -31,7 +31,7 @@ namespace Timesheets.Data
                  .HasOne(pt => pt.Department)
                  .WithMany(p => p.Projects)
                  .HasForeignKey(pt => pt.DepartmentId);
- 				   //.OnDelete(DeleteBehavior.Cascade);   // Setup CASCADE ON DELETE
+            //.OnDelete(DeleteBehavior.Cascade);   // Setup CASCADE ON DELETE
             modelBuilder.Entity<DepartmentProject>()
                  .HasOne(pt => pt.Project)
                  .WithMany(t => t.Departments)
@@ -52,14 +52,18 @@ namespace Timesheets.Data
                 .OnDelete(DeleteBehavior.Restrict); // https://stackoverflow.com/questions/41711772/entity-framework-core-cascade-delete-one-to-many-relationship
 
             modelBuilder.Entity<IdentityRole>().HasData(
-                    new IdentityRole() { Name="Admin",NormalizedName="ADMIN" },
-                    new IdentityRole() { Name="Employee", NormalizedName="EMPLOYEE" },
-                    new IdentityRole() { Name="Manager", NormalizedName="MANAGER"}
+                    new IdentityRole() { Name = "Admin", NormalizedName = "ADMIN" },
+                    new IdentityRole() { Name = "Employee", NormalizedName = "EMPLOYEE" },
+                    new IdentityRole() { Name = "Manager", NormalizedName = "MANAGER" }
                 );
 
+            modelBuilder.Entity<MyUser>()
+                .HasMany(u => u.TimesheetEntries)
+                .WithOne(te => te.RelatedUser)
+                .HasForeignKey(te => te.RelatedUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Seed();
-
-
         }
     }
 }

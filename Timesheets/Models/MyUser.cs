@@ -15,5 +15,6 @@ namespace Timesheets.Models
         public double CostPerHour { get; set; }
         public string ManagerId { get; set; }
         public virtual MyUser Manager { get; set; }
+        public virtual ICollection<TimesheetEntry> TimesheetEntries { get; set; }
     }
 }

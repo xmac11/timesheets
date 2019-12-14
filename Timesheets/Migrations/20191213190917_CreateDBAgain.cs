@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Timesheets.Migrations
 {
-    public partial class initial : Migration
+    public partial class CreateDBAgain : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -138,9 +138,9 @@ namespace Timesheets.Migrations
                     AccessFailedCount = table.Column<int>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
+                    DepartmentId = table.Column<int>(nullable: false),
                     CostPerHour = table.Column<double>(nullable: false),
-                    ManagerId = table.Column<string>(nullable: true),
-                    DepartmentId = table.Column<int>(nullable: true)
+                    ManagerId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -150,7 +150,7 @@ namespace Timesheets.Migrations
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AspNetUsers_AspNetUsers_ManagerId",
                         column: x => x.ManagerId,
@@ -166,7 +166,7 @@ namespace Timesheets.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
-                    OwnerDeptId = table.Column<int>(nullable: true)
+                    OwnerDeptId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -228,23 +228,49 @@ namespace Timesheets.Migrations
                         column: x => x.RelatedUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "e3632061-9fea-464c-a2a5-ca87b5614eca", "a98a6938-c3bc-4564-afa0-4c691d4df01d", "Admin", "ADMIN" });
+                values: new object[,]
+                {
+                    { "2d362005-3ca3-4596-8d0e-b92c2af67b23", "cd616b09-7230-4944-9368-9f37a5f9f33a", "Admin", "ADMIN" },
+                    { "3f47534d-d4f6-4b8e-8ce1-ace068b6149f", "c692a478-1850-48ca-b7e9-c2a6a09bf495", "Employee", "EMPLOYEE" },
+                    { "8f2952ec-a7be-4641-a8ad-c16283613ea5", "0832f400-7771-4d32-9561-2dcbf19814fb", "Manager", "MANAGER" }
+                });
 
             migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "3376940d-f67e-47ad-a385-a71d153b4ece", "b6902e5b-f52d-49fb-aede-a67ee60e00f0", "Employee", "EMPLOYEE" });
+                table: "Departments",
+                columns: new[] { "Id", "DepartmentHeadId", "Name" },
+                values: new object[,]
+                {
+                    { 1, null, "IT" },
+                    { 2, null, "R&D" },
+                    { 3, null, "Human Resources" },
+                    { 4, null, "Accounting" }
+                });
 
             migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "bfe2fd19-d79f-4fe7-b8ef-bab4e67791d5", "11d49e39-e3c2-48fa-a391-2fac7d0efb74", "Manager", "MANAGER" });
+                table: "Projects",
+                columns: new[] { "Id", "Name", "OwnerDeptId" },
+                values: new object[] { 1, "App Development", 1 });
+
+            migrationBuilder.InsertData(
+                table: "Projects",
+                columns: new[] { "Id", "Name", "OwnerDeptId" },
+                values: new object[] { 2, "Website Development", 1 });
+
+            migrationBuilder.InsertData(
+                table: "DepartmentProject",
+                columns: new[] { "DepartmentId", "ProjectId" },
+                values: new object[] { 2, 1 });
+
+            migrationBuilder.InsertData(
+                table: "DepartmentProject",
+                columns: new[] { "DepartmentId", "ProjectId" },
+                values: new object[] { 3, 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
