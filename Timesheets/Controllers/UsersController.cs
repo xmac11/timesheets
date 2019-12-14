@@ -14,7 +14,7 @@ using Timesheets.Models.ViewModels;
 
 namespace Timesheets.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Manager")]
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -37,6 +37,7 @@ namespace Timesheets.Controllers
         }
 
         // GET: TimesheetEntries/Create
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             UserViewModel viewModel = new UserViewModel();
@@ -67,7 +68,7 @@ namespace Timesheets.Controllers
             }
             return View(viewModel);
         }
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -145,7 +146,7 @@ namespace Timesheets.Controllers
             return View(viewModel);
         }
 
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
