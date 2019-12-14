@@ -32,5 +32,8 @@ namespace Timesheets.Models.ViewModels
         public double CostPerHour { get; set; }
         [DisplayName("Manager")]
         public string ManagerId { get; set; }
+
+        public string DepartmentName { get; set; }
+        public string ManagerName { get; set; }
     }
 }

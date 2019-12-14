@@ -30,8 +30,32 @@ namespace Timesheets.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Users.Include(u=> u.Department);
-            return View(await applicationDbContext.ToListAsync());
+            var users = _context.Users.Include(u => u.Department);
+            List<UserViewModel> userData = new List<UserViewModel>();
+            foreach (MyUser user in users) 
+            {
+                UserViewModel userViewModel = new UserViewModel();
+
+                userViewModel.Id = user.Id;
+                userViewModel.FirstName = user.FirstName;
+                userViewModel.LastName = user.LastName;
+                userViewModel.Email = user.Email;
+                userViewModel.CostPerHour = user.CostPerHour;
+                userViewModel.Roles = await _userManager.GetRolesAsync(user);
+                
+                if (user.Department != null)
+                {
+                    userViewModel.DepartmentName = user.Department.Name;
+                }
+                if (user.Manager != null)
+                {
+                    userViewModel.ManagerName = user.Manager.FirstName + " " + user.Manager.LastName;
+                }
+
+                userData.Add(userViewModel);
+            }
+             
+            return View(userData);
         }
 
         // GET: TimesheetEntries/Create
