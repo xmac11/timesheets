@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Timesheets.Data;
 using Timesheets.Mappers;
@@ -32,7 +33,21 @@ namespace Timesheets.Controllers
 
         public async Task<IActionResult> Index()
         {
-            List<MyUser> users = _context.Users.Include(u => u.Department).ToList();
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            MyUser currentUser = await _userManager.FindByIdAsync(currentUserId);
+            var roles = await _userManager.GetRolesAsync(currentUser);
+
+            List<MyUser> users = new List<MyUser>();
+
+            if (roles.Contains("Admin"))
+            {
+                users = _context.Users.Include(u => u.Department).ToList();
+            }
+            else if(roles.Contains("Manager"))
+            {
+                users = _context.Users.Where(u => u.DepartmentId == currentUser.DepartmentId && u.ManagerId.Equals(currentUser.Id)).ToList();
+            }
+
             List<UserViewModel> userData = new List<UserViewModel>();
             foreach (MyUser user in users) 
             {
