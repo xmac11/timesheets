@@ -1,24 +1,29 @@
-﻿@model IEnumerable<Timesheets.Models.Project>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<MyUser> SignInManager
+@model IEnumerable<Timesheets.Models.Project>
 
 @{
     ViewData["Title"] = "Index";
 }
-    <div class="container">
-        <h1>Projects</h1>
-
-        <p>
-            <a asp-action="Create">Create New</a>
-        </p>
+<div class="container">
+    <h1>Projects</h1>
+    @{
+        if (SignInManager.Context.User.IsInRole("Admin"))
+        {
+            <p>
+                <a asp-action="Create">Create New</a>
+            </p>
+        }
+    }
     <div class="card mb-3">
-    <div class="card-header">
-        <i class="fas fa-table"></i>
-        Data Table
-    </div>
+        <div class="card-header">
+            <i class="fas fa-table"></i>
+            Data Table
+        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <table class="table">
-                        <thead>
+                    <thead>
                         <tr>
                             <th>
                                 Id
@@ -29,9 +34,10 @@
                             <th>
                                 Owner Department
                             </th>
+                            <th></th>
                         </tr>
-                        </thead>
-                        <tbody>
+                    </thead>
+                    <tbody>
                         @foreach (var item in Model)
                         {
                             <tr>
@@ -51,10 +57,9 @@
                                 </td>
                             </tr>
                         }
-                        </tbody>
-                    </table>
+                    </tbody>
                 </table>
             </div>
         </div>
-        </div>
     </div>
+</div>

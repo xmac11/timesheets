@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "GetCostPerDepartment";
 }
-
+<div class="container">
 <h2>Total cost per department</h2>
 
 <html>
@@ -12,69 +12,61 @@
     <script src="~/jquery/jquery.min.js"></script>
     <script src="~/bootstrap/js/bootstrap.min.js"></script>
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <style>
-        #chart_container {
-            width: 1000px;
-            height: 1000px;
-            border: 1px solid #ddd;
-            padding: 1px;
-            border-radius: 4px;
-        }
-    </style>
 </head>
 
 <body>
-    <div id="chart_container">
-        <canvas id="bar_chart">
-        </canvas>
-    </div>
+<div class="container">
+    <canvas id="bar_chart">
+    </canvas>
+</div>
 
-    <script>
+<script>
 
-        var departmentNames = @Html.Raw(Json.Serialize(ViewBag.Labels));
-        var costs = @Html.Raw(Json.Serialize(ViewBag.Costs));
+    var departmentNames = @Html.Raw(Json.Serialize(ViewBag.Labels));
+    var costs = @Html.Raw(Json.Serialize(ViewBag.Costs));
 
-        var ctx = $('#bar_chart');
+    var ctx = $('#bar_chart');
 
-        var barChart = new Chart(ctx,
+    var barChart = new Chart(ctx,
+        {
+            type: 'bar',
+            data:
             {
-                type: 'bar',
-                data:
-                {
-                    labels: departmentNames,
-                    datasets: [{
-                        label: "Total cost per department",
-                        data: costs,
-                        backgroundColor: [
-                            'rgba(242, 166, 54, 0.5)',
-                            'rgba(145, 65, 72, 0.5)',
-                            'rgba(74, 25, 92, 0.5)',
-                            'rgba(34, 139, 34, 0.5)'
-                        ],
-                        borderColor: [
-                            'rgba(242, 166, 54)',
-                            'rgba(145, 65, 72)',
-                            'rgba(74, 25, 92)',
-                            'rgba(34, 139, 34)'
-                        ],
-                        borderWidth: 1
+                labels: departmentNames,
+                datasets: [{
+                    label: "Total cost per department",
+                    data: costs,
+                    backgroundColor: [
+                        'rgba(242, 166, 54, 0.5)',
+                        'rgba(145, 65, 72, 0.5)',
+                        'rgba(74, 25, 92, 0.5)',
+                        'rgba(34, 139, 34, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(242, 166, 54)',
+                        'rgba(145, 65, 72)',
+                        'rgba(74, 25, 92)',
+                        'rgba(34, 139, 34)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                maintainAspectRation: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
                     }]
-                },
-                options: {
-                    maintainAspectRation: false,
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
                 }
-            });
+            }
+        });
 
 
 
-    </script>
+</script>
 
 </body>
 </html>
+</div>
