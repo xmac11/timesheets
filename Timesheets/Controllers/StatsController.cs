@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace Timesheets.Controllers
 {
     //[Route("Stats")]
     //[ApiController]
+    [Authorize(Roles = "Admin,Manager")]
     public class StatsController : Controller
     {
         private ApplicationDbContext _context;

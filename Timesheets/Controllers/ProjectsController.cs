@@ -14,7 +14,7 @@ using Timesheets.Models.ViewModels;
 
 namespace Timesheets.Controllers
 { 
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -178,6 +178,7 @@ namespace Timesheets.Controllers
         }
 
         // GET: Projects/Edit/5
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -273,6 +274,7 @@ namespace Timesheets.Controllers
         }
 
         // GET: Projects/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
