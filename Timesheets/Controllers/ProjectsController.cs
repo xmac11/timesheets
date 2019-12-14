@@ -14,7 +14,7 @@ using Timesheets.Models.ViewModels;
 
 namespace Timesheets.Controllers
 { 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Manager")]
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
