@@ -30,17 +30,42 @@ namespace Timesheets.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Users.Include(u=> u.Department);
-            return View(await applicationDbContext.ToListAsync());
+            List<MyUser> users = _context.Users.Include(u => u.Department).ToList();
+            List<UserViewModel> userData = new List<UserViewModel>();
+            foreach (MyUser user in users) 
+            {
+                UserViewModel userViewModel = new UserViewModel();
+
+                userViewModel.Id = user.Id;
+                userViewModel.FirstName = user.FirstName;
+                userViewModel.LastName = user.LastName;
+                userViewModel.Email = user.Email;
+                userViewModel.CostPerHour = user.CostPerHour;
+                userViewModel.Roles = await _userManager.GetRolesAsync(user);
+                
+                userViewModel.DepartmentName = _context.Departments.First(d => d.Id == user.DepartmentId).Name;
+
+                if (user.ManagerId == null)
+                {
+                    userViewModel.ManagerName = "-";
+                }
+                else 
+                {
+                    userViewModel.ManagerName = _context.Users.First(u => u.Id.Equals(user.ManagerId)).FirstName + " " + _context.Users.First(u => u.Id.Equals(user.ManagerId)).LastName;
+                }
+                userData.Add(userViewModel);
+            }
+             
+            return View(userData);
         }
 
         // GET: TimesheetEntries/Create
         public async Task<IActionResult> Create()
         {
-            UserViewModel viewModel = new UserViewModel();
+            UserViewModelCreate viewModel = new UserViewModelCreate();
 
             var roles = await _roleManager.Roles.ToListAsync();
-            ViewData["Roles"] = new SelectList(roles, "Id", "Name");
+            ViewData["Roles"] = new SelectList(roles, "Name", "Name");
             var departments = await _context.Departments.ToListAsync();
             ViewData["Departments"] = new SelectList(departments, "Id", "Name");
             var managers = await _userManager.GetUsersInRoleAsync("Manager");
@@ -53,15 +78,31 @@ namespace Timesheets.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(UserViewModel viewModel)
+        public async Task<IActionResult> Create(UserViewModelCreate viewModel)
         {
             if (ModelState.IsValid)
             {
-                MyUser user = await _mapper.MapViewModelToUser(viewModel, _userManager, _roleManager);
+                MyUser user = _mapper.CreateUser(viewModel, _userManager, _roleManager).Result;
 
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var result = await _userManager.CreateAsync(user, viewModel.Password);
+
+                if (result.Succeeded)
+                {
+
+                    //_context.SaveChanges();
+                    await _userManager.SetEmailAsync(user, viewModel.Email);
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    await _userManager.ConfirmEmailAsync(user, token);
+
+                    //remove roles and add only the ones from viewmodel
+                    await _userManager.AddToRolesAsync(user, viewModel.Roles);
+
+
+                    //_context.Add(user);
+                    //await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+
+                }
             }
             return View(viewModel);
         }
