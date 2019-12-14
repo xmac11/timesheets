@@ -116,11 +116,12 @@
                             <span>Projects</span>
                         </a>
                     </li>
-
-                    <a class="nav-link" asp-area="" asp-controller="TimesheetEntries" asp-action="Index">
-                        <i class="fas fa-envelope fa-fw"></i>
-                        <span>Timesheets</span>
-                    </a>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="TimesheetEntries" asp-action="Index">
+                            <i class="fas fa-envelope fa-fw"></i>
+                            <span>Timesheets</span>
+                        </a>
+                    </li>
                 }
                 else if (SignInManager.Context.User.IsInRole("Manager"))
                 {
@@ -170,7 +171,10 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="TimesheetEntries" asp-action="Index">Timesheets</a>
+                        <a class="nav-link" asp-area="" asp-controller="TimesheetEntries" asp-action="Index">
+                            <i class="fas fa-envelope fa-fw"></i>
+                            <span>Timesheets</span>
+                        </a>
                     </li>
                 }
             }
