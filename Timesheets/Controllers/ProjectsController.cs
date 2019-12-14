@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,7 +13,8 @@ using Timesheets.Models;
 using Timesheets.Models.ViewModels;
 
 namespace Timesheets.Controllers
-{
+{ 
+    [Authorize(Roles = "Admin,Manager")]
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -94,6 +96,7 @@ namespace Timesheets.Controllers
         }
 
         // GET: Projects/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ProjectViewModel viewModel = new ProjectViewModel();
