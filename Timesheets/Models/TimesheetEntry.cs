@@ -28,7 +28,7 @@ namespace Timesheets.Models
         public TimesheetEntry() { }
 
         public int Id { get; set; }
-
+        public virtual string RelatedUserId { get; set; }
         public virtual MyUser RelatedUser { get; set; }
 
         public virtual Project RelatedProject { get; set; }

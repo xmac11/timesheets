@@ -48,6 +48,7 @@ namespace Timesheets
             services.AddRazorPages();
 
             services.AddScoped<ITimesheetEntryMapper, TimesheetEntryMapper>();
+            services.AddScoped<IUserMapper, UserMapper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

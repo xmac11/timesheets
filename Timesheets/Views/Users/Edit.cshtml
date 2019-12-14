@@ -1,0 +1,70 @@
+﻿@model Timesheets.Models.ViewModels.UserViewModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<MyUser> userManager
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>User</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Roles"></label>
+                <select asp-for="Roles" multiple asp-items="(SelectList) @ViewData["Roles"]"></select>
+                <span asp-validation-for="Roles" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CostPerHour" class="control-label"></label>
+                <input asp-for="CostPerHour" class="form-control" />
+                <span asp-validation-for="CostPerHour" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DepartmentId" class="control-label">Department</label>
+                <select asp-for="DepartmentId" class="form-control" asp-items="(SelectList) @ViewData["Departments"]">
+                    <option disabled selected>Select employee...</option>
+                </select>
+                <span asp-validation-for="DepartmentId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ManagerId" class="control-label"></label>
+                <select asp-for="ManagerId" class="form-control" asp-items="(SelectList) @ViewData["Managers"]">
+                    <option disabled selected>Select employee...</option>
+                </select>
+                <span asp-validation-for="ManagerId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

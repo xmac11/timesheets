@@ -48,22 +48,22 @@ namespace Timesheets.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8b2353f9-399f-4ce7-9a63-45734f9eec06",
-                            ConcurrencyStamp = "c63e0b4b-9107-4a8b-b2af-91667a6b0f27",
+                            Id = "2d362005-3ca3-4596-8d0e-b92c2af67b23",
+                            ConcurrencyStamp = "cd616b09-7230-4944-9368-9f37a5f9f33a",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "4c80bfc2-bcfd-487c-93d5-181a494d5a4a",
-                            ConcurrencyStamp = "b66f4a53-fcaf-4698-b17f-cd31480db4f3",
+                            Id = "3f47534d-d4f6-4b8e-8ce1-ace068b6149f",
+                            ConcurrencyStamp = "c692a478-1850-48ca-b7e9-c2a6a09bf495",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "7dabd878-89c4-45eb-92c5-ac91b26f5b2e",
-                            ConcurrencyStamp = "edf64450-7a3d-4f03-bbfb-d454da50da91",
+                            Id = "8f2952ec-a7be-4641-a8ad-c16283613ea5",
+                            ConcurrencyStamp = "0832f400-7771-4d32-9561-2dcbf19814fb",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         });
@@ -496,8 +496,9 @@ namespace Timesheets.Migrations
                         .HasForeignKey("RelatedProjectId");
 
                     b.HasOne("Timesheets.Models.MyUser", "RelatedUser")
-                        .WithMany()
-                        .HasForeignKey("RelatedUserId");
+                        .WithMany("TimesheetEntries")
+                        .HasForeignKey("RelatedUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
