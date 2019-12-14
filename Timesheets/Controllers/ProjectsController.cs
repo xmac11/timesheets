@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,17 +16,38 @@ namespace Timesheets.Controllers
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<MyUser> _userManager;
 
-        public ProjectsController(ApplicationDbContext context)
+        public ProjectsController(ApplicationDbContext context, UserManager<MyUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Projects
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Projects.Include(p => p.OwnerDept);
-            return View(await applicationDbContext.ToListAsync());
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            MyUser currentUser = await _userManager.FindByIdAsync(currentUserId);
+            var roles = await _userManager.GetRolesAsync(currentUser);
+
+            IList<Project> projects = new List<Project>();
+
+            if (roles.Contains("Admin"))
+            {
+                projects = await _context.Projects.Include(p => p.OwnerDept).ToListAsync();
+            }
+            else if (roles.Contains("Manager"))
+            {
+                projects = await _context.DepartmentProjects
+                                         .Include(dp => dp.Project)
+                                         .Include(dp => dp.Project.OwnerDept)
+                                         .Where(dp => dp.DepartmentId == currentUser.DepartmentId)
+                                         .Select(dp => dp.Project)
+                                         .ToListAsync();
+            }
+
+            return View(projects);
         }
 
         // GET: Projects/Details/5

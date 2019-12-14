@@ -18,18 +18,52 @@ namespace Timesheets.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IUserMapper _mapper;
         private readonly UserManager<MyUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UsersController(ApplicationDbContext context, IUserMapper mapper, UserManager<MyUser> userManager)
+        public UsersController(ApplicationDbContext context, IUserMapper mapper, UserManager<MyUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _mapper = mapper;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Users;
+            var applicationDbContext = _context.Users.Include(u=> u.Department);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        // GET: TimesheetEntries/Create
+        public async Task<IActionResult> Create()
+        {
+            UserViewModel viewModel = new UserViewModel();
+
+            var roles = await _roleManager.Roles.ToListAsync();
+            ViewData["Roles"] = new SelectList(roles, "Id", "Name");
+            var departments = await _context.Departments.ToListAsync();
+            ViewData["Departments"] = new SelectList(departments, "Id", "Name");
+            var managers = await _userManager.GetUsersInRoleAsync("Manager");
+            ViewData["Managers"] = new SelectList(managers, "Id", "UserName");
+            return View(viewModel);
+        }
+
+        // POST: TimesheetEntries/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(UserViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                MyUser user = await _mapper.MapViewModelToUser(viewModel, _userManager, _roleManager);
+
+                _context.Add(user);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Edit(string id)
@@ -39,7 +73,7 @@ namespace Timesheets.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users.FindAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
             {
@@ -51,15 +85,24 @@ namespace Timesheets.Controllers
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Password = user.PasswordHash,
+                Email = user.Email,
                 CostPerHour = user.CostPerHour,
                 DepartmentId = user.DepartmentId,
                 ManagerId = user.ManagerId,
+                Roles = await _userManager.GetRolesAsync(user)
             };
 
+            var roles = await _roleManager.Roles.ToListAsync();
+            //List<SelectListItem> rolesItems = new List<SelectListItem>();
+            //foreach (var r in roles)
+            //{
+            //    rolesItems.Add((SelectListItem) r);
+            //}
+            ViewData["Roles"] = new SelectList(roles, "Name", "Name", viewModel.Roles);
+            var departments = await _context.Departments.ToListAsync();
+            ViewData["Departments"] = new SelectList(departments, "Id", "Name", viewModel.DepartmentId);
             var managers = await _userManager.GetUsersInRoleAsync("Manager");
-            ViewData["Managers"] = new SelectList(managers, viewModel.Manager);
-            //ViewData["DepartmentHeadId"] = new SelectList(_context.Users, "Id", "Id", department.DepartmentHeadId);
+            ViewData["Managers"] = new SelectList(managers, "Id","UserName", viewModel.ManagerId);
             return View(viewModel);
         }
 
@@ -72,15 +115,16 @@ namespace Timesheets.Controllers
                 return NotFound();
             }
 
-            
+
 
             if (ModelState.IsValid)
             {
-                MyUser user = await _mapper.MapViewModelToUser(viewModel, _userManager);
+
+                MyUser user = await _mapper.MapViewModelToUser(viewModel, _userManager, _roleManager);
+                var userRolesDebug = await _userManager.GetRolesAsync(user);
                 try
                 {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
+                    await _userManager.UpdateAsync(user);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -95,7 +139,7 @@ namespace Timesheets.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            
+
             return View(viewModel);
         }
 
@@ -121,8 +165,10 @@ namespace Timesheets.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var user = await _context.Users.FindAsync(id);
-            _context.Users.Remove(user);
+            var user = await  _userManager.FindByIdAsync(id); 
+            //_context.Users.FindAsync(id);
+            await _userManager.DeleteAsync(user);
+            //_context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
