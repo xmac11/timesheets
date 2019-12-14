@@ -22,7 +22,7 @@ namespace Timesheets.Mappers
             UserManager<MyUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
-            MyUser user = await _context.Users.FindAsync(viewModel.Id);
+            MyUser user = await userManager.FindByIdAsync(viewModel.Id); 
 
             user.FirstName = viewModel.FirstName;
             user.LastName = viewModel.LastName;
@@ -30,6 +30,8 @@ namespace Timesheets.Mappers
             user.DepartmentId = viewModel.DepartmentId;
             user.ManagerId = viewModel.ManagerId;
             await userManager.SetEmailAsync(user, viewModel.Email);
+            var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            await userManager.ConfirmEmailAsync(user, token);
 
             //remove roles and add only the ones from viewmodel
             var roles = await userManager.GetRolesAsync(user);

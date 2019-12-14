@@ -73,7 +73,7 @@ namespace Timesheets.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users.FindAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
             {
@@ -124,8 +124,7 @@ namespace Timesheets.Controllers
                 var userRolesDebug = await _userManager.GetRolesAsync(user);
                 try
                 {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
+                    await _userManager.UpdateAsync(user);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -166,8 +165,10 @@ namespace Timesheets.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var user = await _context.Users.FindAsync(id);
-            _context.Users.Remove(user);
+            var user = await  _userManager.FindByIdAsync(id); 
+            //_context.Users.FindAsync(id);
+            await _userManager.DeleteAsync(user);
+            //_context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
