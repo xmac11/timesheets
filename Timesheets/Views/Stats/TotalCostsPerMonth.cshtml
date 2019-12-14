@@ -1,0 +1,53 @@
+﻿
+@{
+    ViewData["Title"] = "TotalCostsPerMonth";
+}
+
+<div class="container">
+    <h2>Total cost per month</h2>
+
+    <html>
+    <head>
+        <script src="~/chart.js/Chart.min.js"></script>
+        <script src="~/jquery/jquery.min.js"></script>
+        <script src="~/bootstrap/js/bootstrap.min.js"></script>
+        <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    </head>
+
+    <body>
+        <div class="container">
+            <canvas id="line_chart">
+            </canvas>
+        </div>
+
+        <script>
+
+    var costsPerMonth = @Html.Raw(Json.Serialize(ViewBag.CostsPerMonth));
+
+    var ctx = $('#line_chart');
+
+            
+
+            var myLineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                            datasets: [
+                                {
+                                    label: "Total cost per month",
+                                    data: costsPerMonth,
+                                    lineTension: 0,
+                                    backgroundColor: 'rgba(34, 139, 34, 0.5)',
+                                    borderColor: 'rgba(34, 139, 34, 1)'
+                                }
+                            ]
+                        }
+            });
+
+
+
+        </script>
+
+    </body>
+</html>
+</div>

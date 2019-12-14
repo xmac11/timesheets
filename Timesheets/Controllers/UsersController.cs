@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Timesheets.Data;
 using Timesheets.Mappers;
@@ -13,6 +15,7 @@ using Timesheets.Models.ViewModels;
 
 namespace Timesheets.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")]
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -30,17 +33,57 @@ namespace Timesheets.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Users.Include(u=> u.Department);
-            return View(await applicationDbContext.ToListAsync());
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            MyUser currentUser = await _userManager.FindByIdAsync(currentUserId);
+            var roles = await _userManager.GetRolesAsync(currentUser);
+
+            List<MyUser> users = new List<MyUser>();
+
+            if (roles.Contains("Admin"))
+            {
+                users = _context.Users.Include(u => u.Department).ToList();
+            }
+            else if(roles.Contains("Manager"))
+            {
+                users = _context.Users.Where(u => u.DepartmentId == currentUser.DepartmentId && u.ManagerId.Equals(currentUser.Id)).ToList();
+            }
+
+            List<UserViewModel> userData = new List<UserViewModel>();
+            foreach (MyUser user in users) 
+            {
+                UserViewModel userViewModel = new UserViewModel();
+
+                userViewModel.Id = user.Id;
+                userViewModel.FirstName = user.FirstName;
+                userViewModel.LastName = user.LastName;
+                userViewModel.Email = user.Email;
+                userViewModel.CostPerHour = user.CostPerHour;
+                userViewModel.Roles = await _userManager.GetRolesAsync(user);
+                
+                userViewModel.DepartmentName = _context.Departments.First(d => d.Id == user.DepartmentId).Name;
+
+                if (user.ManagerId == null)
+                {
+                    userViewModel.ManagerName = "-";
+                }
+                else 
+                {
+                    userViewModel.ManagerName = _context.Users.First(u => u.Id.Equals(user.ManagerId)).FirstName + " " + _context.Users.First(u => u.Id.Equals(user.ManagerId)).LastName;
+                }
+                userData.Add(userViewModel);
+            }
+             
+            return View(userData);
         }
 
         // GET: TimesheetEntries/Create
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
-            UserViewModel viewModel = new UserViewModel();
+            UserViewModelCreate viewModel = new UserViewModelCreate();
 
             var roles = await _roleManager.Roles.ToListAsync();
-            ViewData["Roles"] = new SelectList(roles, "Id", "Name");
+            ViewData["Roles"] = new SelectList(roles, "Name", "Name");
             var departments = await _context.Departments.ToListAsync();
             ViewData["Departments"] = new SelectList(departments, "Id", "Name");
             var managers = await _userManager.GetUsersInRoleAsync("Manager");
@@ -53,19 +96,35 @@ namespace Timesheets.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(UserViewModel viewModel)
+        public async Task<IActionResult> Create(UserViewModelCreate viewModel)
         {
             if (ModelState.IsValid)
             {
-                MyUser user = await _mapper.MapViewModelToUser(viewModel, _userManager, _roleManager);
+                MyUser user = _mapper.CreateUser(viewModel, _userManager, _roleManager).Result;
 
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var result = await _userManager.CreateAsync(user, viewModel.Password);
+
+                if (result.Succeeded)
+                {
+
+                    //_context.SaveChanges();
+                    await _userManager.SetEmailAsync(user, viewModel.Email);
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    await _userManager.ConfirmEmailAsync(user, token);
+
+                    //remove roles and add only the ones from viewmodel
+                    await _userManager.AddToRolesAsync(user, viewModel.Roles);
+
+
+                    //_context.Add(user);
+                    //await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+
+                }
             }
             return View(viewModel);
         }
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -143,7 +202,7 @@ namespace Timesheets.Controllers
             return View(viewModel);
         }
 
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -163,6 +222,7 @@ namespace Timesheets.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var user = await  _userManager.FindByIdAsync(id); 
