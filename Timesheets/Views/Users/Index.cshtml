@@ -2,16 +2,21 @@
 
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<MyUser> userManager
+@inject SignInManager<MyUser> SignInManager
 @{
     ViewData["Title"] = "Index";
 }
 
 <div class="container">
     <h1>Users</h1>
-
-    <p>
-        <a asp-action="Create">Add New User</a>
-    </p>
+    @{
+        if (SignInManager.Context.User.IsInRole("Admin"))
+        {
+            <p>
+                <a asp-action="Create">Create New</a>
+            </p>
+        }
+    }
     <div class="card mb-3">
         <div class="card-header">
             <i class="fas fa-table"></i>
@@ -65,11 +70,10 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.ManagerName)
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
 
-                                    @if (!item.Roles.Contains("Manager") &&
-                                        (!item.Roles.Contains("Admin")))
+                                    @if (!item.Roles.Contains("Admin") && SignInManager.Context.User.IsInRole("Admin"))
                                     {
                                         <a asp-action="Delete" asp-route-id="@item.Id">| Delete </a>
                                     }
