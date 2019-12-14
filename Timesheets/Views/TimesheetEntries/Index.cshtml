@@ -1,5 +1,7 @@
 ﻿@using System.Collections.Specialized
+@using Microsoft.AspNetCore.Identity
 @model IEnumerable<Timesheets.Models.TimesheetEntry>
+@inject SignInManager<MyUser> SignInManager
 
 
 @{
@@ -19,7 +21,7 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
+                    <thead>
                         <tr>
                             <th>
                                 Id
@@ -38,8 +40,8 @@
                             </th>
                             <th></th>
                         </tr>
-                        </thead>
-                        <tbody>
+                    </thead>
+                    <tbody>
                         @foreach (var item in Model)
                         {
                             <tr>
@@ -58,15 +60,21 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.HoursWorked)
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                                </td>
+                                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                                    @{
+                                        if (SignInManager.Context.User.IsInRole("Admin") || SignInManager.Context.User.IsInRole("Manager"))
+                                        
+                                        {
+                                            <a asp-action="Delete" asp-route-id="@item.Id"> | Delete</a>
+                                        }
+                                    }
+                                    </td>
                             </tr>
                         }
-                        </tbody>
-                    </table>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
