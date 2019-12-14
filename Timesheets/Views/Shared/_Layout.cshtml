@@ -105,62 +105,72 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
+                        <a class="nav-link" asp-area="" asp-controller="Users" asp-action="Index">
+                            <i class="fas fa-user-circle fa-fw"></i>
+                            <span>Users</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Projects" asp-action="Index">
+                            <i class="fas fa-fw fa-table"></i>
+                            <span>Projects</span>
+                        </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Projects" asp-action="Index">Projects</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="TimesheetEntries" asp-action="Index">Timesheets</a>
-                    </li>
+                    <a class="nav-link" asp-area="" asp-controller="TimesheetEntries" asp-action="Index">
+                        <i class="fas fa-envelope fa-fw"></i>
+                        <span>Timesheets</span>
+                    </a>
                 }
                 else if (SignInManager.Context.User.IsInRole("Manager"))
                 {
                     <li class="nav-item active">
-                        <a class="nav-link" href="index.html">
+                        <a class="nav-link">
                             <i class="fas fa-fw fa-tachometer-alt"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Projects" asp-action="Index">Projects</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="TimesheetEntries" asp-action="Index">Timesheets</a>
+                        <a class="nav-link" asp-area="" asp-controller="Users" asp-action="Index">
+                            <i class="fas fa-user-circle fa-fw"></i>
+                            <span>Users</span>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Users" asp-action="Index">Statistics</a>
+                        <a class="nav-link" asp-area="" asp-controller="Projects" asp-action="Index">
+                            <i class="fas fa-fw fa-table"></i>
+                            <span>Projects</span>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="charts.html">
+                        <a class="nav-link" asp-area="" asp-controller="TimesheetEntries" asp-action="Index">
+                            <i class="fas fa-envelope fa-fw"></i>
+                            <span>Timesheets</span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-fw fa-chart-area"></i>
                             <span>Charts</span>
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="TimeSheets" asp-action="Create">
-                            <i class="fas fa-fw fa-table"></i>
-                            <span>Tables</span>
-                        </a>
+                        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                            <h6 class="dropdown-header">Statistics:</h6>
+                            <a class="dropdown-item" asp-area="" asp-controller="Stats" asp-action="GetProjectsPerTime">Cost Per Department</a>
+                            <a class="dropdown-item">Hours Per Project</a>
+                            <a class="dropdown-item">Hours Per Month</a>
+                        </div>
                     </li>
                 }
                 else if (SignInManager.Context.User.IsInRole("Employee"))
                 {
                     <li class="nav-item active">
-                        <a class="nav-link" href="index.html">
+                        <a class="nav-link">
                             <i class="fas fa-fw fa-tachometer-alt"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Index">Timesheets</a>
+                        <a class="nav-link" asp-area="" asp-controller="TimesheetEntries" asp-action="Index">Timesheets</a>
                     </li>
                 }
             }
