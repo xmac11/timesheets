@@ -192,6 +192,29 @@ namespace Timesheets.Data
                     userManager.AddToRoleAsync(employee, "Employee").Wait();
                 }
             }
+
+            // employee (with manager Nikos)
+            if (userManager.FindByEmailAsync("iosifgeme@gmail.com").Result == null)
+            {
+                MyUser employee = new MyUser
+                {
+                    UserName = "iosifgeme@gmail.com",
+                    Email = "iosifgeme@gmail.com",
+                    EmailConfirmed = true,
+                    FirstName = "Iosif",
+                    LastName = "Gemenitzoglou",
+                    CostPerHour = 10,
+                    DepartmentId = 2,
+                    ManagerId = userManager.FindByEmailAsync("manager@gmail.com").Result.Id // Id of Nikos (manager)
+                };
+
+                IdentityResult result = userManager.CreateAsync(employee, "111111").Result;
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRoleAsync(employee, "Employee").Wait();
+                }
+            }
         }
     }
 }

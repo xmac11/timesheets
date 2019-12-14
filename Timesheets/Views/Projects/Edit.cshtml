@@ -1,0 +1,55 @@
+﻿@model Timesheets.Models.ViewModels.ProjectViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+    <div class="container">
+        <h1>Edit</h1>
+
+        <h4>Project</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="OwnerDeptName" class="control-label"></label>
+                        <select asp-for="OwnerDeptName" asp-items="@(new SelectList(Model.DepartmentNames))" class="form-control">
+                            <option disabled selected>Select an owner department...</option>
+                        </select>
+                        <span asp-validation-for="OwnerDeptName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label> Add related departments </label>
+                        @for (int i = 0; i < Model.DepartmentNames.Count; i++)
+                        {
+                            <input type="hidden" asp-for="DepartmentNames[i]" />
+                            <div class="form-group">
+                                @Html.CheckBoxFor(s => s.AreSelected[i])
+                                @Html.DisplayFor(s => Model.DepartmentNames[i])<br />
+                            </div>
+                        }
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

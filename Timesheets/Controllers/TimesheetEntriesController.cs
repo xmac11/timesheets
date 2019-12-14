@@ -51,7 +51,7 @@ namespace Timesheets.Controllers
                 return View(await _context.TimesheetEntries
                     .Include(t => t.RelatedUser)
                     .Include(t => t.RelatedProject)
-                    .Where(t => t.RelatedUser.DepartmentId == currentUser.DepartmentId)
+                    .Where(t => t.RelatedUser.ManagerId.Equals(currentUser.Id))
                     .ToListAsync());
             }
 
@@ -86,13 +86,13 @@ namespace Timesheets.Controllers
         }
 
         // GET: TimesheetEntries/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             TimesheetEntryViewModel viewModel = new TimesheetEntryViewModel();
 
-            this.AddUsernamesToViewModel(viewModel);
+            await this.AddUsernamesToViewModel(viewModel);
 
-            this.AddProjectNamesToViewModel(viewModel);
+            await this.AddProjectNamesToViewModel(viewModel);
 
             return View(viewModel);
         }
@@ -116,11 +116,6 @@ namespace Timesheets.Controllers
                 }
                 else
                 {
-                    /*this.AddUsernamesToViewModel(viewModel);
-
-                    this.AddProjectNamesToViewModel(viewModel);
-
-                    return View(viewModel);*/
                     ViewBag.ErrorTitle = "Error";
                     ViewBag.ErrorMessage = "User already has a timesheet entry for the same date and project";
                     return View("CustomError");
@@ -131,14 +126,21 @@ namespace Timesheets.Controllers
 
         private bool NoEntryExistsForSameDateAndProject(TimesheetEntry timesheetEntry)
         {
-            return !_context.TimesheetEntries.Any() ||
-                _context.TimesheetEntries.FirstOrDefault(e => e.DateCreated == timesheetEntry.DateCreated
+            return _context.TimesheetEntries.FirstOrDefault(e => e.DateCreated == timesheetEntry.DateCreated
+                                                    && e.RelatedUser.UserName.Equals(timesheetEntry.RelatedUser.UserName)
+                                                    && e.RelatedProject.Id == timesheetEntry.RelatedProject.Id) == null;
+        }
+
+        private bool NoEntryExistsForSameDateAndProjectExcludingSelf(TimesheetEntry timesheetEntry)
+        {
+            var otherEntries = _context.TimesheetEntries.Where(e => e.Id != timesheetEntry.Id);
+            return otherEntries.FirstOrDefault(e => e.DateCreated == timesheetEntry.DateCreated
                                                     && e.RelatedUser.UserName.Equals(timesheetEntry.RelatedUser.UserName)
                                                     && e.RelatedProject.Id == timesheetEntry.RelatedProject.Id) == null;
         }
 
         // GET: TimesheetEntries/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -161,9 +163,9 @@ namespace Timesheets.Controllers
             };
 
 
-            this.AddUsernamesToViewModel(viewModel);
+            await this.AddUsernamesToViewModel(viewModel);
 
-            this.AddProjectNamesToViewModel(viewModel);
+            await this.AddProjectNamesToViewModel(viewModel);
 
             return View(viewModel);
         }
@@ -184,7 +186,7 @@ namespace Timesheets.Controllers
             {
                 TimesheetEntry timesheetEntry = _mapper.MapViewModelToTimesheetEntry(viewModel);
 
-                if (NoEntryExistsForSameDateAndProject(timesheetEntry))
+                if (NoEntryExistsForSameDateAndProjectExcludingSelf(timesheetEntry))
                 {
                     try
                     {
@@ -217,9 +219,30 @@ namespace Timesheets.Controllers
 
 
         // private helper
-        private void AddProjectNamesToViewModel(TimesheetEntryViewModel viewModel)
+        private async Task AddProjectNamesToViewModel(TimesheetEntryViewModel viewModel)
         {
-            List<Project> projects = _context.Projects.ToList();
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            MyUser currentUser = await _userManager.FindByIdAsync(currentUserId);
+            var roles = await _userManager.GetRolesAsync(currentUser);
+
+            List<Project> projects = new List<Project>();
+
+            if (roles.Contains("Admin"))
+            {
+                projects = _context.DepartmentProjects
+                                      .Include(dp => dp.Project)
+                                      .Select(dp => dp.Project)
+                                      .ToList();
+            }
+            else if (roles.Contains("Manager") || roles.Contains("Employee"))
+            {
+                projects = _context.DepartmentProjects
+                                      .Include(dp => dp.Project)
+                                      .Where(dp => dp.DepartmentId == currentUser.DepartmentId)
+                                      .Select(dp => dp.Project)
+                                      .ToList();
+            }
+
             foreach (Project project in projects)
             {
                 viewModel.ProjectNames.Add(project.Name);
@@ -227,13 +250,32 @@ namespace Timesheets.Controllers
         }
 
         // private helper
-        private void AddUsernamesToViewModel(TimesheetEntryViewModel viewModel)
+        private async Task AddUsernamesToViewModel(TimesheetEntryViewModel viewModel)
         {
-            List<MyUser> users = _context.Users.ToList();
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            MyUser currentUser = await _userManager.FindByIdAsync(currentUserId);
+            var roles = await _userManager.GetRolesAsync(currentUser);
+
+            List<MyUser> users = new List<MyUser>();
+
+            if (roles.Contains("Admin"))
+            {
+                users = _context.Users.ToList();
+            }
+            else if(roles.Contains("Manager"))
+            {
+                users = _context.Users.Where(u => u.ManagerId.Equals(currentUser.Id)).ToList();
+            }
+            else if (roles.Contains("Employee"))
+            {
+                users = _context.Users.Where(u => u.Id == currentUser.Id).ToList();
+            }
+
             foreach (MyUser user in users)
             {
                 viewModel.UserNames.Add(user.UserName);
             }
+
         }
 
         // GET: TimesheetEntries/Delete/5
