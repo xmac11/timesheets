@@ -178,7 +178,6 @@ namespace Timesheets.Controllers
         }
 
         // GET: Projects/Edit/5
-        [Authorize(Roles = "Admin,Manager")]
         public IActionResult Edit(int? id)
         {
             if (id == null)

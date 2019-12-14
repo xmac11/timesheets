@@ -10,8 +10,6 @@ using Timesheets.Models;
 
 namespace Timesheets.Controllers
 {
-    //[Route("Stats")]
-    //[ApiController]
     [Authorize(Roles = "Admin,Manager")]
     public class StatsController : Controller
     {

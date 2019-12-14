@@ -222,6 +222,7 @@ namespace Timesheets.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var user = await  _userManager.FindByIdAsync(id); 

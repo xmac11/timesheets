@@ -279,6 +279,7 @@ namespace Timesheets.Controllers
         }
 
         // GET: TimesheetEntries/Delete/5
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -299,6 +300,7 @@ namespace Timesheets.Controllers
         // POST: TimesheetEntries/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var timesheetEntry = await _context.TimesheetEntries.FindAsync(id);
