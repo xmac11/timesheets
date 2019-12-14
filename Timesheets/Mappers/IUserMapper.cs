@@ -11,5 +11,6 @@ namespace Timesheets.Mappers
     public interface IUserMapper
     {
         public Task<MyUser> MapViewModelToUser(UserViewModel viewModel, UserManager<MyUser> userManager, RoleManager<IdentityRole> roleManager);
+        public Task<MyUser> CreateUser(UserViewModelCreate viewModel, UserManager<MyUser> userManager, RoleManager<IdentityRole> roleManager);
     }
 }

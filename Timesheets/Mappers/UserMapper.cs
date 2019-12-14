@@ -9,7 +9,7 @@ using Timesheets.Models.ViewModels;
 
 namespace Timesheets.Mappers
 {
-    public class UserMapper :IUserMapper
+    public class UserMapper : IUserMapper
     {
         private readonly ApplicationDbContext _context;
 
@@ -18,11 +18,11 @@ namespace Timesheets.Mappers
             _context = context;
         }
         public async Task<MyUser> MapViewModelToUser(
-            UserViewModel viewModel, 
+            UserViewModel viewModel,
             UserManager<MyUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
-            MyUser user = await userManager.FindByIdAsync(viewModel.Id); 
+            MyUser user = await userManager.FindByIdAsync(viewModel.Id);
 
             user.FirstName = viewModel.FirstName;
             user.LastName = viewModel.LastName;
@@ -37,6 +37,23 @@ namespace Timesheets.Mappers
             var roles = await userManager.GetRolesAsync(user);
             await userManager.RemoveFromRolesAsync(user, roles.ToArray());
             await userManager.AddToRolesAsync(user, viewModel.Roles);
+
+            return user;
+        }
+        public async Task<MyUser> CreateUser(
+            UserViewModelCreate viewModel,
+            UserManager<MyUser> userManager,
+            RoleManager<IdentityRole> roleManager)
+        {
+            MyUser user = new MyUser()
+            {
+                UserName = viewModel.Email,
+                FirstName = viewModel.FirstName,
+                LastName = viewModel.LastName,
+                CostPerHour = viewModel.CostPerHour,
+                DepartmentId = viewModel.DepartmentId,
+                ManagerId = viewModel.ManagerId,
+            };
 
             return user;
         }

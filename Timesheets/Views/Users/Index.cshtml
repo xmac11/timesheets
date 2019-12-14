@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Timesheets.Models.MyUser>
+﻿@model IEnumerable<Timesheets.Models.ViewModels.UserViewModel>
 
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<MyUser> userManager
@@ -60,16 +60,16 @@
                             @Html.DisplayFor(modelItem => item.CostPerHour)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Department.Name)
+                            @Html.DisplayFor(modelItem => item.DepartmentName)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Manager.UserName)
+                            @Html.DisplayFor(modelItem => item.ManagerName)
                         </td>
                         <td>
                             <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
                     
-                            @if (!userManager.GetRolesAsync(item).Result.Contains("Manager") && 
-                                 (!userManager.GetRolesAsync(item).Result.Contains("Admin")))
+                            @if (!item.Roles.Contains("Manager") && 
+                                 (!item.Roles.Contains("Admin")))
                             {
                                 <a asp-action="Delete" asp-route-id="@item.Id">| Delete </a>
                             }

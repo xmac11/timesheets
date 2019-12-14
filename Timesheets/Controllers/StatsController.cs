@@ -80,5 +80,30 @@ namespace Timesheets.Controllers
 
             return View();
         }
+
+        [HttpGet]
+        public ActionResult TotalCostsPerMonth()
+        {
+            var department_partialCost = from user in _context.Users
+                                         join entry in _context.TimesheetEntries on user.Id equals entry.RelatedUser.Id
+                                         join department in _context.Departments on user.DepartmentId equals department.Id
+                                         select new { EntryDate = entry.DateCreated, Cost = user.CostPerHour * entry.HoursWorked };
+
+            var groupCostByDepartment = (from result in department_partialCost
+                                        group result by result.EntryDate.Month into months
+                                        select new { MonthIndex = months.Key, TotalCost = months.Sum(d => d.Cost) }) .OrderBy(x => x.MonthIndex);
+
+            double[] costsPerMonth = new double[12];
+            foreach(var element in groupCostByDepartment)
+            {
+                costsPerMonth[element.MonthIndex-1] = element.TotalCost;
+            }
+
+            ViewBag.CostsPerMonth = costsPerMonth;
+
+            return View();
+        }
+
+
     }
 }
