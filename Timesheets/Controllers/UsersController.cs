@@ -30,7 +30,7 @@ namespace Timesheets.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var users = _context.Users.Include(u => u.Department);
+            List<MyUser> users = _context.Users.Include(u => u.Department).ToList();
             List<UserViewModel> userData = new List<UserViewModel>();
             foreach (MyUser user in users) 
             {
@@ -43,15 +43,16 @@ namespace Timesheets.Controllers
                 userViewModel.CostPerHour = user.CostPerHour;
                 userViewModel.Roles = await _userManager.GetRolesAsync(user);
                 
-                if (user.Department != null)
-                {
-                    userViewModel.DepartmentName = user.Department.Name;
-                }
-                if (user.Manager != null)
-                {
-                    userViewModel.ManagerName = user.Manager.FirstName + " " + user.Manager.LastName;
-                }
+                userViewModel.DepartmentName = _context.Departments.First(d => d.Id == user.DepartmentId).Name;
 
+                if (user.ManagerId == null)
+                {
+                    userViewModel.ManagerName = "-";
+                }
+                else 
+                {
+                    userViewModel.ManagerName = _context.Users.First(u => u.Id.Equals(user.ManagerId)).FirstName + " " + _context.Users.First(u => u.Id.Equals(user.ManagerId)).LastName;
+                }
                 userData.Add(userViewModel);
             }
              
