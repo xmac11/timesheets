@@ -124,7 +124,7 @@ namespace Timesheets.Controllers
             }
             return View(viewModel);
         }
-        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
